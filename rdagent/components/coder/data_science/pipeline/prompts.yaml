@@ -158,6 +158,20 @@ pipeline_coder:
     You should be very careful about the label classes number in the debug mode. The label classes should be the same as the full run even when you are in the debug mode. The label classes number is often used to build the model.
     {% endif %}
 
+
+    ## General Guidelines
+    1. Code correctness is the top priority. Ensure your code is runnable and produces the expected output even if some task requirements are not fully met because the task itself might contain some errors like the wrong package name or wrong package function names.
+    2. Use the print() function for all output; do not use the logging module.
+    3. **Avoid all hard-coded values (e.g., fixed dataset sizes)**. Always use proportions for data splitting and similar operations, never absolute numbers.
+    4. Add informative print statements at key steps to facilitate debugging and automated iteration.
+    5. For model training, use reasonable epoch numbers. ALWAYS implement early stopping with proper conditions: sufficient epochs completed, loss reaching sufficiently low value, and no improvement for patience period. Save best model checkpoints based on validation performance.
+    6. Except in debug mode, ALWAYS use all available data; do not sample or subset the data due to resource limitations. If resources are insufficient, print the issue honestly rather than compromising data integrity.
+    7. Do not use tqdm or similar progress bar tools.
+    8. **Try-except blocks are ONLY allowed when reading files. If no files are successfully read, it indicates incorrect file paths or reading methods, not a try-except issue. Try-except is PROHIBITED elsewhere in the code. Assert statements are PROHIBITED throughout the entire code.**
+    9. ATTENTION: ALWAYS use the best saved model (not necessarily final epoch) for predictions. **NEVER create dummy/placeholder submissions (e.g., all 1s, random values)**. If training fails, report failure honestly rather than generating fake submission files.
+    10. You should ALWAYS generate the complete code rather than partial code.
+    11. Strictly follow all specifications and general guidelines described above.
+
     {% if enable_mock_test_mode %}
     You need to create a reproducible local "mock test set" from 10% of the original training data and evaluate your scoring pipeline end-to-end without using the real test labels.
 
@@ -179,31 +193,19 @@ pipeline_coder:
     Training & validation source
     Always use train id from `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/train.*` (the 90% split).
     Load source data other than id from origin `{% include "scenarios.data_science.share:scen.input_path" %}` 
+    `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/label.csv` should not be used for training.
 
     ### Scoring (scores.csv)
-    Compute scores by predicting on test data from `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/` and comparing to `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/label.csv` using the competition's official metric.
+    Compute scores by predicting on mock test id from `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/` and comparing to `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/label.csv` using the competition's official metric.
     Always build submission.csv by running inference on the real test set under `{% include "scenarios.data_science.share:scen.input_path" %}` , not the mock test.
     {% else %}
     Training & validation source
-    Load train data from origin `{% include "scenarios.data_science.share:scen.input_path" %}` 
+    Load data from origin `{% include "scenarios.data_science.share:scen.input_path" %}` 
 
     ### Scoring (scores.csv)
-    Compute scores by predicting on valid data id from `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/test_id.csv` and comparing to `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/label.csv` using the competition's official metric.
+    Compute scores by predicting on mock test id from `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/test_id.csv` and comparing to `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/label.csv` using the competition's official metric.
     Always build submission.csv by running inference on the real test set under `{% include "scenarios.data_science.share:scen.input_path" %}` , not the mock test.
     {% endif %}
-
-    ## General Guidelines
-    1. Code correctness is the top priority. Ensure your code is runnable and produces the expected output even if some task requirements are not fully met because the task itself might contain some errors like the wrong package name or wrong package function names.
-    2. Use the print() function for all output; do not use the logging module.
-    3. **Avoid all hard-coded values (e.g., fixed dataset sizes)**. Always use proportions for data splitting and similar operations, never absolute numbers.
-    4. Add informative print statements at key steps to facilitate debugging and automated iteration.
-    5. For model training, use reasonable epoch numbers. ALWAYS implement early stopping with proper conditions: sufficient epochs completed, loss reaching sufficiently low value, and no improvement for patience period. Save best model checkpoints based on validation performance.
-    6. Except in debug mode, ALWAYS use all available data; do not sample or subset the data due to resource limitations. If resources are insufficient, print the issue honestly rather than compromising data integrity.
-    7. Do not use tqdm or similar progress bar tools.
-    8. **Try-except blocks are ONLY allowed when reading files. If no files are successfully read, it indicates incorrect file paths or reading methods, not a try-except issue. Try-except is PROHIBITED elsewhere in the code. Assert statements are PROHIBITED throughout the entire code.**
-    9. ATTENTION: ALWAYS use the best saved model (not necessarily final epoch) for predictions. **NEVER create dummy/placeholder submissions (e.g., all 1s, random values)**. If training fails, report failure honestly rather than generating fake submission files.
-    10. You should ALWAYS generate the complete code rather than partial code.
-    11. Strictly follow all specifications and general guidelines described above.
 
     ### Output Format
     {% if out_spec %}
@@ -221,6 +223,11 @@ pipeline_coder:
 
     # Data Folder Description (All path are relative to the data folder, i.e. "{% include "scenarios.data_science.share:scen.input_path" %}")
     {{ folder_spec }}
+
+    {% if mock_folder_info %}
+    # Mock id Folder Description (All path are relative to the data folder, i.e. "{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/")
+    {{ mock_folder_info }}
+    {% endif %}
     
     {% if latest_code %}
     # Former code

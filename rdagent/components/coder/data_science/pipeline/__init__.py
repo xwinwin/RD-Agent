@@ -45,6 +45,7 @@ from rdagent.core.experiment import FBWorkspace
 from rdagent.core.scenario import Scenario
 from rdagent.core.utils import import_class
 from rdagent.oai.llm_utils import APIBackend
+from rdagent.scenarios.data_science.scen.utils import describe_data_folder_v2
 from rdagent.utils.agent.ret import PythonAgentOut
 from rdagent.utils.agent.tpl import T
 
@@ -89,9 +90,16 @@ class PipelineMultiProcessEvolvingStrategy(MultiProcessEvolvingStrategy):
                 enable_notebook_conversion=DS_RD_SETTING.enable_notebook_conversion,
             ),
         )
+        mock_folder_info = None
+        if Path("/tmp/full/mock_ids/").exists():
+            mock_folder_info = describe_data_folder_v2(
+                Path("/tmp/full/mock_ids/"),
+                show_nan_columns=DS_RD_SETTING.show_nan_columns,
+            )
         user_prompt = T(".prompts:pipeline_coder.user").r(
             competition_info=competition_info,
             folder_spec=data_folder_info,
+            mock_foler_spec=mock_folder_info,
             latest_code=workspace.file_dict.get("main.py"),
             latest_code_feedback=prev_task_feedback,
         )
