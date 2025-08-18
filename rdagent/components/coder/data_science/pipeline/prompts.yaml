@@ -190,7 +190,7 @@ pipeline_coder:
     test_id.csv (the 10% part, without the label column).
     label.csv (the 10% labels only).
     
-    Training & validation source
+    ### Training & validation source
     Always use train id from `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/train.*` (the 90% split).
     Load source data other than id from origin `{% include "scenarios.data_science.share:scen.input_path" %}` 
     `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/label.csv` should not be used for training.
@@ -199,7 +199,7 @@ pipeline_coder:
     Compute scores by predicting on mock test id from `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/` and comparing to `{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/label.csv` using the competition's official metric.
     Always build submission.csv by running inference on the real test set under `{% include "scenarios.data_science.share:scen.input_path" %}` , not the mock test.
     {% else %}
-    Training & validation source
+    ### Training & validation source
     Load data from origin `{% include "scenarios.data_science.share:scen.input_path" %}` 
 
     ### Scoring (scores.csv)
@@ -224,9 +224,9 @@ pipeline_coder:
     # Data Folder Description (All path are relative to the data folder, i.e. "{% include "scenarios.data_science.share:scen.input_path" %}")
     {{ folder_spec }}
 
-    {% if mock_folder_info %}
+    {% if mock_foler_spec %}
     # Mock id Folder Description (All path are relative to the data folder, i.e. "{% include "scenarios.data_science.share:scen.cache_path" %}mock_ids/")
-    {{ mock_folder_info }}
+    {{ mock_foler_spec }}
     {% endif %}
     
     {% if latest_code %}
