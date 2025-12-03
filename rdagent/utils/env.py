@@ -661,7 +661,7 @@ class DockerConf(EnvConf):
 
 
 class QlibCondaConf(CondaConf):
-    conda_env_name: str = "rdagent4qlib"
+    conda_env_name: str = os.environ.get("CONDA_DEFAULT_ENV", "rdagent")
     enable_cache: bool = False
     default_entry: str = "qrun conf.yaml"
     # extra_volumes: dict = {str(Path("~/.qlib/").expanduser().resolve().absolute()): "/root/.qlib/"}

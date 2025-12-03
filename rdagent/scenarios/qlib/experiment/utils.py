@@ -2,51 +2,74 @@ import random
 import re
 import shutil
 from pathlib import Path
+import importlib
 
 import pandas as pd
 from jinja2 import Environment, StrictUndefined
 
 from rdagent.components.coder.factor_coder.config import FACTOR_COSTEER_SETTINGS
-from rdagent.utils.env import QTDockerEnv
 
+try:
+    qlib = importlib.import_module("qlib")
+except ImportError:
+    qlib = None
+    from rdagent.utils.env import TDockerEnv
 
 def generate_data_folder_from_qlib():
     template_path = Path(__file__).parent / "factor_data_template"
-    qtde = QTDockerEnv()
-    qtde.prepare()
+    h5_all = template_path / "daily_pv_all.h5"
+    h5_debug = template_path / "daily_pv_debug.h5"
 
-    # Run the Qlib backtest
-    execute_log = qtde.check_output(
-        local_path=str(template_path),
-        entry=f"python generate.py",
-    )
+    if qlib is None:
+        tdocker_env = TDockerEnv()
+        tdocker_env.prepare()
+        execute_log = tdocker_env.check_output(
+            local_path=str(template_path),
+            entry=f"python generate.py",
+        )
+    else:
+        qlib.init(provider_uri="~/.qlib/qlib_data/cn_data")
+        from qlib.data import D
+        execute_log = ""
+        instruments = D.instruments()
 
-    assert (Path(__file__).parent / "factor_data_template" / "daily_pv_all.h5").exists(), (
+        if not h5_all.exists():
+            fields = ["$open", "$close", "$high", "$low", "$volume", "$factor"]
+            data = D.features(instruments, fields, freq="day").swaplevel().sort_index().loc["2008-12-29":].sort_index()
+            data.to_hdf(h5_all, key="data")
+
+        if not h5_debug.exists():
+            fields = ["$open", "$close", "$high", "$low", "$volume", "$factor"]
+            data = D.features(instruments, fields, start_time="2018-01-01", end_time="2019-12-31", freq="day").swaplevel().sort_index().swaplevel()
+            data = data.loc[data.reset_index()["instrument"].unique()[:100]].swaplevel().sort_index()
+            data.to_hdf(h5_debug, key="data")
+
+    assert h5_all.exists(), (
         "daily_pv_all.h5 is not generated. It means rdagent/scenarios/qlib/experiment/factor_data_template/generate.py is not executed correctly. Please check the log: \n"
         + execute_log
     )
-    assert (Path(__file__).parent / "factor_data_template" / "daily_pv_debug.h5").exists(), (
+    assert h5_debug.exists(), (
         "daily_pv_debug.h5 is not generated. It means rdagent/scenarios/qlib/experiment/factor_data_template/generate.py is not executed correctly. Please check the log: \n"
         + execute_log
     )
 
     Path(FACTOR_COSTEER_SETTINGS.data_folder).mkdir(parents=True, exist_ok=True)
     shutil.copy(
-        Path(__file__).parent / "factor_data_template" / "daily_pv_all.h5",
+        h5_all,
         Path(FACTOR_COSTEER_SETTINGS.data_folder) / "daily_pv.h5",
     )
     shutil.copy(
-        Path(__file__).parent / "factor_data_template" / "README.md",
+        template_path / "README.md",
         Path(FACTOR_COSTEER_SETTINGS.data_folder) / "README.md",
     )
 
     Path(FACTOR_COSTEER_SETTINGS.data_folder_debug).mkdir(parents=True, exist_ok=True)
     shutil.copy(
-        Path(__file__).parent / "factor_data_template" / "daily_pv_debug.h5",
+        h5_debug,
         Path(FACTOR_COSTEER_SETTINGS.data_folder_debug) / "daily_pv.h5",
     )
     shutil.copy(
-        Path(__file__).parent / "factor_data_template" / "README.md",
+        template_path / "README.md",
         Path(FACTOR_COSTEER_SETTINGS.data_folder_debug) / "README.md",
     )
 
