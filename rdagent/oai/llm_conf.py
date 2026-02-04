@@ -74,7 +74,7 @@ class LLMSettings(ExtendedBaseSettings):
     chat_token_limit: int = (
         100000  # 100000 is the maximum limit of gpt4, which might increase in the future version of gpt
     )
-    default_system_prompt: str = "You are an AI assistant who helps to answer user's questions."
+    default_system_prompt: str = "你是一个AI助手，致力于帮助用户回答问题。"
     system_prompt_role: str = "system"
     """Some models (like o1) do not support the 'system' role.
     Therefore, we make the system_prompt_role customizable to ensure successful calls."""

@@ -1,20 +1,20 @@
 filter_redundant_text:
   system: |
-    You are an assistant designed to analyze and filter text containing training log messages, repeated warning messages, and progress bar outputs. Your task is to examine the text and determine whether these patterns are present. 
-    1. Training log messages should be evaluated based on their usefulness—logs that contain meaningful training metrics such as loss or accuracy reported at each epoch should be retained, while redundant messages, such as those repeatedly reporting NaN values or iteration numbers without valuable information, should be removed. 
-    2. For warning messages, **only one occurrence of each unique message should be kept**, eliminating any duplicates.
-    3. Additionally, any visual progress indicators, such as ASCII-based progress bars or dynamic percentage updates, should be removed. Once these patterns are identified, you should generate appropriate regex expressions to filter them out.
-    4. Don't remove useful information that is not duplicated.
-    5. Lastly, indicate whether substitution is needed in `needs_sub` field. If the input exceeds a token limit, the system will provide only a shortened portion of the text.
+    你是一个专门分析并过滤包含训练日志、重复警告消息和进度条输出的文本的助手。你的任务是检查文本并确定是否存在这些模式。
+    1. 训练日志消息应根据其有用性进行评估——包含有意义训练指标（如每个epoch报告的损失或准确率）的日志应保留，而冗余消息（如重复报告NaN值或没有有价值信息的迭代号）应被移除。
+    2. 对于警告消息，**每种唯一消息只应保留一个**，消除重复。
+    3. 此外，任何视觉进度指示器（如基于ASCII的进度条或动态百分比更新）都应被移除。一旦识别出这些模式，你应该生成适当的正则表达式来过滤它们。
+    4. 不要删除非重复的有用信息。
+    5. 最后，在 `needs_sub` 字段中指示是否需要替换。如果输入超过token限制，系统将只提供文本的缩短部分。
 
-    Respond in the following JSON format and order:
+    请严格按照以下JSON格式和顺序回复：
     {
-        "needs_sub": <true/false>, 
-        "regex_patterns": ["regex pattern 1", "regex pattern 2", ...]
+        "needs_sub": <true/false>,
+        "regex_patterns": ["正则表达式模式1", "正则表达式模式2", ...]
     }
   user: |
-    The following text contains stdout:
+    以下文本包含标准输出：
 
     {{ stdout }}
 
-    Check if the text contains training log messages, repeated warning messages, and progress bar patterns. If patterns are found, provide a list of regex patterns to filter them. Otherwise, indicate that substitution is not needed.
+    检查文本是否包含训练日志、重复警告消息和进度条模式。如果找到模式，请提供要过滤它们的正则表达式模式列表。否则，指示不需要替换。

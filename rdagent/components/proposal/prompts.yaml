@@ -1,64 +1,64 @@
 hypothesis_gen:
   system_prompt: |-
-    The user is working on generating new hypotheses for the {{ targets }} in a data-driven research and development process. 
-    The {{ targets }} are used in the following scenario:
+    用户正在为数据驱动研发过程中的{{ targets }}生成新假设。
+    {{ targets }}用于以下场景：
     {{ scenario }}
-    The user has already proposed several hypotheses and conducted evaluations on them. This information will be provided to you. Your task is to analyze previous experiments, reflect on the decision made in each experiment, and consider why experiments with a decision of true were successful while those with a decision of false failed. Then, think about how to improve further — either by refining the existing approach or by exploring an entirely new direction.
-    If one exists and you agree with it, feel free to use it. If you disagree, please generate an improved version.
+    用户已经提出了几个假设并对它们进行了评估。这些信息将提供给你。你的任务是分析先前的实验，反思每个实验中做出的决定，并考虑决策为true的实验为何成功，而决策为false的实验为何失败。然后，考虑如何进一步改进——无论是改进现有方法还是探索全新方向。
+    如果存在且你同意，请随意使用。如果你不同意，请生成改进版本。
     {% if hypothesis_specification %}
-    To assist you in formulating new hypotheses, the user has provided some additional information: {{ hypothesis_specification }}.
-    **Important:** If the hypothesis_specification outlines the next steps you need to follow, ensure you adhere to those instructions.
+    为帮助你制定新假设，用户提供了一些附加信息：{{ hypothesis_specification }}。
+    **重要：**如果hypothesis_specification概述了你需要遵循的下一步，请确保遵守这些说明。
     {% endif %}
-    Please generate the output using the following format and specifications:
+    请使用以下格式和规范生成输出：
     {{ hypothesis_output_format }}
 
   user_prompt: |-
     {% if hypothesis_and_feedback|length == 0 %}
-    It is the first round of hypothesis generation. The user has no hypothesis on this scenario yet.
+    这是假设生成的第一轮。用户还没有关于这个场景的假设。
     {% else %}
-    The former hypothesis and the corresponding feedbacks are as follows:
+    先前的假设和相应的反馈如下：
     {{ hypothesis_and_feedback }}
     {% endif %}
     {% if last_hypothesis_and_feedback %}
-    Here is the last trial's hypothesis and the corresponding feedback (The main feedback contains a new hypothesis for your reference only. You need to evaluate the complete trace chain to decide whether to adopt it or propose a more appropriate hypothesis):
+    这是上一次试验的假设和相应的反馈（主要反馈包含一个新假设，仅供参考。你需要评估整个轨迹链以决定是采用它还是提出更合适的假设）：
     {{ last_hypothesis_and_feedback }}
     {% endif %}
     {% if sota_hypothesis_and_feedback != "" %}
-    Here is the SOTA trail's hypothesis and the corresponding feedback:
+    这是SOTA试验的假设和相应的反馈：
     {{ sota_hypothesis_and_feedback }}
     {% endif %}
     {% if RAG %}
-    To assist you in generating new {{ targets }}, we have provided the following information: {{ RAG }}.
+    为帮助你生成新的{{ targets }}，我们提供了以下信息：{{ RAG }}。
     {% endif %}
 
 hypothesis2experiment:
   system_prompt: |-
-    The user is trying to generate new {{ targets }} based on the hypothesis generated in the previous step. 
-    The {{ targets }} are used in certain scenario, the scenario is as follows:
+    用户正在尝试根据上一步生成的假设生成新的{{ targets }}。
+    {{ targets }}用于某个场景，场景如下：
     {{ scenario }}
-    The user will use the {{ targets }} generated to do some experiments. The user will provide this information to you:
-    1. The target hypothesis you are targeting to generate {{ targets }} for.
-    2. The hypothesis generated in the previous steps and their corresponding feedbacks.
-    3. Former proposed {{ targets }} on similar hypothesis.
-    4. Some additional information to help you generate new {{ targets }}.
-    Please generate the output following the format below:
+    用户将使用生成的{{ targets }}进行一些实验。用户将向你提供以下信息：
+    1. 你要为其生成{{ targets }}的目标假设。
+    2. 先前步骤中生成的假设及其相应的反馈。
+    3. 之前针对类似假设提出的{{ targets }}。
+    4. 一些帮助你生成新{{ targets }}的附加信息。
+    请按照以下格式生成输出：
     {{ experiment_output_format }}
     
   user_prompt: |-
-    The user has made several hypothesis on this scenario and did several evaluation on them.
-    The target hypothesis you are targeting to generate {{ targets }} for is as follows:
+    用户对这个场景做了一些假设并对它们进行了几次评估。
+    你要为其生成{{ targets }}的目标假设如下：
     {{ target_hypothesis }}
     {% if hypothesis_and_feedback %}
-    The former hypothesis and the corresponding feedbacks are as follows:
+    先前的假设和相应的反馈如下：
     {{ hypothesis_and_feedback }}
     {% endif %}
     {% if last_hypothesis_and_feedback %}
-    The latest hypothesis and the corresponding feedback are as follows:
+    最新的假设和相应的反馈如下：
     {{ last_hypothesis_and_feedback }}
     {% endif %}
     {% if sota_hypothesis_and_feedback %}
-    The SOTA hypothesis and the corresponding feedback are as follows:
+    SOTA假设和相应的反馈如下：
     {{ sota_hypothesis_and_feedback }}
     {% endif %}
 
-    Please generate the new {{ targets }} based on the information above.
+    请根据上述信息生成新的{{ targets }}。

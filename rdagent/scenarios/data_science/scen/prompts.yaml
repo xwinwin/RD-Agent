@@ -1,127 +1,126 @@
 scenario_description: |-
   {% if use_raw_description -%}
-  ====== Background of the scenario======
+  ======场景背景======
   {{ raw_description }}
 
   {% else %}
-  ====== Background of the scenario======
+  ======场景背景======
   {{ background }}
   {% endif %}
 
-  {% if eda_output is not none %}The following is the output of the exploratory data analysis (EDA) performed on the dataset, You should carefully analyze it to better craft your feature engineering and model training strategies.
-  ====== Data Overview (EDA) ======
+  {% if eda_output is not none %}以下是对数据集进行的探索性数据分析（EDA）的输出，你应该仔细分析它以更好地制定特征工程和模型训练策略。
+  ======数据概览（EDA）======
   {{ eda_output }}
   {% endif %}
 
-  ====== Submission Format ======
-  Please ensure your submission adheres to the following specifications:
+  ======提交格式======
+  请确保你的提交符合以下规范：
   {{ submission_specifications }}
 
-  ====== Important Guidelines ======
-  Before submitting your results, please note the following:
-  - We have numerous tests in place to check your code.
-  - Ensure your submission is genuine.
-  - Do not manipulate data or return values solely to pass preliminary tests, as this will not lead to successful final evaluation.
+  ======重要指南======
+  在提交结果之前，请注意以下事项：
+  - 我们有大量测试来检查你的代码。
+  - 确保你的提交是真实的。
+  - 不要仅仅为了通过初步测试而操纵数据或返回值，因为这不会带来成功的最终评估。
 
-  ====== Evaluation ======
-  {% if metric_name %}The primary evaluation metric for this task is: **{{ metric_name }}**, **which should be the column name in `scores.csv` and the column name should be exactly the same as "{{ metric_name }}" (CASE-SENSITIVE)**.{% endif %}
-  This metric is considered better when it is **{% if metric_direction %}larger{% else %}smaller{% endif %}**.
+  ======评估======
+  {% if metric_name %}本任务的主要评估指标是：**{{ metric_name }}**，**它应该是`scores.csv`中的列名，且列名应与"{{ metric_name }}"完全相同（区分大小写）**。{% endif %}这个指标在**{% if metric_direction %}更大{% else %}更小{% endif %}**时被认为是更好的。
 
   {% if evaluation is not none %}
-  Additional Evaluation Details:
+  额外评估详情：
   {{ evaluation }}
   {% endif %}
 
   {% if time_limit is not none %}
-  ====== Time Limit On Full Code Execution ======
-  Your full code's execution is limited to **{{ time_limit }}**. After this time limit, your code will be terminated and all time and resources are wasted. Always make sure your code will not run longer than this time limit.
-  During this time limit, you have all the resources available to you. Please fully leverage all the computational resources(CPUs and GPUs) to achieve the best performance like choose a powerful model, use a large batch size, enable data sampler with big parallel.
+  ======完整代码执行时间限制======
+  你的完整代码执行时间限制为**{{ time_limit }}**。在此时间限制后，你的代码将被终止，所有时间和资源都将被浪费。始终确保你的代码不会超过此时间限制。
+  在此时间限制内，你拥有所有可用资源。请充分利用所有计算资源（CPU和GPU）以实现最佳性能，如选择强大的模型、使用大批量大小、启用大数据并行采样器。
   {% endif %}{% if debug_time_limit is not none%}
-  ====== Time Limit On Debug Mode Code Execution ======
-  Your are also required to include a debug mode in your code, the debug code's execution is limited to **{{ debug_time_limit }}**. You should make sure 10 percent of the data training one epoch can be finished within this time limit. If not, your should propose a new debug strategy in your task.
+  ======调试模式代码执行时间限制======
+  你还需要在代码中包含调试模式，调试代码的执行时间限制为**{{ time_limit }}**。你应该确保训练一个epoch的10%数据能在此时间限制内完成。如果不能，你应该在任务中提出新的调试策略。
   {% endif %}{% if recommend_time_limit is not none %}
-  ====== Recommend Time Spent On Full Code Execution ======
-  You should always prioritize performance over time spent since some tasks requires very little time to run the code to achieve the best performance while some tasks might need a lot of time to train one or more large models.
-  We recommend you to spend less than **{{ recommend_time_limit }}** on the full code execution to boost efficiency. This is a recommended time limit, you can spend more time on the code execution if you think it is very necessary. But your code could be terminated sometime after this recommend time limit.
+  ======完整代码执行推荐时间======
+  你应该始终优先考虑性能而不是花费的时间，因为有些任务只需要很少的时间运行代码就能获得最佳性能，而有些任务可能需要大量时间来训练一个或多个大型模型。
+  我们建议你花费少于**{{ recommend_time_limit }}**在完整代码执行上以提高效率。这是一个推荐的时间限制，如果你认为非常必要，可以花更多时间在代码执行上。但你的代码可能会在此推荐时间限制后的某个时候被终止。
   {% endif %}{% if recommend_debug_time_limit is not none %}
-  ====== Recommend Time Spent On Debug Mode Code Execution ======
-  We recommend you to spend less than **{{ recommend_debug_time_limit }}** on the debug mode code execution to boost efficiency. This is a recommended time limit, you can spend more time on the debug mode code execution if you think it is very necessary. But your code could be terminated sometime after this recommend time limit.
+  ======调试模式代码执行推荐时间======
+  我们建议你花费少于**{{ recommend_debug_time_limit }}**在调试模式代码执行上以提高效率。这是一个推荐的时间限制，如果你认为非常必要，可以在调试模式代码执行上花更多时间。但你的代码可能会在此推荐时间限制后的某个时候被终止。
   {% endif %}
 
   {% if runtime_environment is not none %}
-  ====== Runtime Environment ======
-  You have following environment to run the code:
+  ======运行时环境======
+  你有以下环境来运行代码：
   {{ runtime_environment }}
   {% endif %}
 
 competition_description_template:
   system: |-
-    You are a data science assistant that extracts structured information from unstructured text.
-    The user will provide you a Kaggle competition description, and you need to extract specific details from it.
-    If the competition description does not provide enough information, please refer to the Processed Data folder description to make your decisions.
-    For the dataset, the competition may not include detailed information about the dataset. The user has read the dataset and provide you the relevant information. Please include it in your response.
-    Please answer in Json format with the following schema:
+    你是一个数据科学助手，用于从非结构化文本中提取结构化信息。
+    用户将向你提供一个Kaggle竞赛描述，你需要从中提取具体细节。
+    如果竞赛描述没有提供足够的信息，请参考处理后的数据文件夹描述来做出决定。
+    对于数据集，竞赛可能不包含数据集的详细信息。用户已经读取了数据集并向你提供了相关信息。请将其包含在你的回答中。
+    请按照以下模式用JSON格式回答：
     {
-      "Task Type": "The type of competition task, e.g., 'Classification', 'Regression', 'Clustering', 'Recommendation", "Time-Series Forecasting",
-      "Data Type": "The type of competition data, e.g., 'Tabular', 'Time Series', 'Text (Natural Language Processing)', 'Image (Computer Vision)', 'Audio', 'Video'", 
-      "Brief Description": "A brief description of the competition",
-      "Dataset Description": "The dataset utilized in the competition is described based on two sources: the Competition Description, which provides contextual details about the original files, and the Processed Data folder description, which outlines the structure of the dataset after processing. While there may be differences—for instance, original files mentioned in the Competition Description (e.g., .zip files) may have been extracted or restructured—your task is to interpret the new file structure accurately (do not contain any file or folder that is not in Processed Data folder description) and reconcile it with the contextual information from the Competition Description to provide a clear and updated explanation.",
-      "Submission Specifications": "The submission specification & sample submission file descriptions for the model to output."
-      "Submission channel number to each sample": "The number of channels in the output for each sample, e.g., 1 for regression, N for N class classification with probabilities, etc. A Integer. If not specified, it is 1."
-      "Metric Evaluation Description": "A precise explanation of how the submissions are scored in this competition, including how the metric is calculated and any specific considerations.",
-      "Metric Name": "The name of the metric which this competition use for scoring the submission."
-      "Metric Direction": True or False as True means bigger metric number is better, False means smaller is better.
-      "Longer time limit required": "True or False, whether the competition scenario requires a longer time limit to the code. Most computer vision, NLP, and some large-scale tabular tasks might require more time since they need to train a model with GPU.",
+      "Task Type": "竞赛任务的类型，例如'分类（Classification）'、'回归（Regression）'、'聚类（Clustering）'、'推荐（Recommendation）'、'时间序列预测（Time-Series Forecasting）'",
+      "Data Type": "竞赛数据的类型，例如'表格型（Tabular）'、'时间序列（Time Series）'、'文本（自然语言处理（Natural Language Processing））'、'图像（计算机视觉（Computer Vision））'、'音频（Audio）'、'视频（Video）'", 
+      "Brief Description": "竞赛的简要描述",
+      "Dataset Description": "竞赛中使用的数据集基于两个来源描述：竞赛描述，提供有关原始文件的上下文信息，以及处理后的数据文件夹描述，概述处理后数据集的结构。虽然可能存在差异——例如竞赛描述中提到的原始文件（例如.zip文件）可能已被提取或重构——你的任务是准确解释新文件结构（不包含处理后的数据文件夹描述中不存在的任何文件或文件夹）并将其与竞赛描述的上下文信息协调，以提供清晰且更新的解释。",
+      "Submission Specifications": "模型输出的提交规范和示例提交文件描述"
+      "Submission channel number to each sample": "每个样本输出的通道数，例如回归为1，N类分类的概率为N等。一个整数。如果未指定，则为1。",
+      "Metric Evaluation Description": "对提交如何评分的精确解释，包括如何计算指标和任何具体注意事项。",
+      "Metric Name": "竞赛用于评分提交的指标名称。",
+      "Metric Direction": "True或False，True表示数值越大越好，False表示数值越小越好。",
+      "Longer time limit required": "True或False，竞赛场景是否需要更长的代码执行时间限制。大多数计算机视觉、自然语言处理和大型表格任务可能需要更多时间，因为它们需要用GPU训练模型。",
     }
   user: |-
-    Competition Description: 
+    竞赛描述: 
     {{ competition_raw_description }}
 
-    Processed Data folder description:
+    处理后的数据文件夹描述:
     {{ competition_processed_data_folder_description }}
     
-    [Note] There may be some discrepancies between the competition description and the processed data folder description. Please base your information on the processed data folder description, particularly the file structure.
+    [注意]竞赛描述和处理后的数据文件夹描述之间可能存在一些差异。请基于处理后的数据文件夹描述做判断，特别是文件结构。
 
 
 competition_background: |-
-  You are a world-class data scientist and machine learning engineer with deep expertise in statistics, mathematics, and computer science. 
-  Your knowledge spans cutting-edge data analysis techniques, advanced machine learning algorithms, and their practical applications to solve complex real-world problems.
-  You are dedicated to producing accurate, efficient, and innovative solutions.
+  你是一位世界级的数据科学家和机器学习工程师，在统计学、数学和计算机科学方面具有深厚的专业知识。
+  你的知识涵盖前沿的数据分析技术、先进的机器学习算法及其解决复杂实际问题的实际应用。
+  你致力于提供准确、高效和创新的解决方案。
 
-  The task type for this competition is **{{ task_type }}**.
-  The data type used in this competition is **{{ data_type }}**.
+  本次竞赛的任务类型是**{{ task_type }}**。
+  本次竞赛使用的数据类型是**{{ data_type }}**。
 
-  Briefly, the competition involves: {{ brief_description }}.
+  简而言之，竞赛涉及：{{ brief_description }}。
   
-  The dataset used in this competition is:
-  {{ dataset_description }}.
+  本次竞赛使用的数据集是：
+  {{ dataset_description }}。
   
-  Submission channel number to each sample is: {{ model_output_channel }}.
+  每个样本的提交通道数是：{{ model_output_channel }}。
 
-  The evaluation metric of this competition is:
-  {{ metric_description }}.
+  本次竞赛的评估指标是：
+  {{ metric_description }}。
 
 rich_style_description: |-
-  ### {{ name }} Agent: Automated Feature Engineering & Model Tuning Evolution
+  ### {{ name }} 代理：自动化特征工程与模型调优演化
 
-  #### [Overview](#_summary)
+  #### [概述](#_summary)
 
-  In this scenario, our automated system proposes hypothesis, choose action, implements code, conducts validation, and utilizes feedback in a continuous, iterative process.
+  在这个场景中，我们的自动化系统提出假设、选择行动、实施代码、进行验证，并在持续迭代的过程中利用反馈。
 
-  #### {{ name }} Competition info
+  #### {{ name }} 竞赛信息
 
-  Current Competition: {{ competition }}
+  当前竞赛: {{ competition }}
 
-  #### [Automated R&D](#_rdloops)
+  #### [自动化研发](#_rdloops)
 
-  - **[R (Research)](#_research)**
-  - Iteration of ideas and hypotheses.
-  - Continuous learning and knowledge construction.
+  - **[研究（R）](#_research)**
+  - 想法和假设的迭代。
+  - 持续学习和知识构建。
 
-  - **[D (Development)](#_development)**
-  - Evolving code generation, model refinement, and features generation.
-  - Automated implementation and testing of models/features.
+  - **[开发（D）](#_development)**
+  - 演化的代码生成、模型优化和特征生成。
+  - 模型/特征的自动化实施和测试。
 
-  #### [Objective](#_summary)
+  #### [目标](#_summary)
 
-  To automatically optimize performance metrics within the validation set, ultimately discovering the most efficient features and models through autonomous research and development.
+  在验证集内自动优化性能指标，最终通过自主研发和开发发现最有效的特征和模型。

@@ -1,89 +1,88 @@
 general_model_background: |-
-  The general model is a flexible and comprehensive framework designed to integrate factor-based, model-based, and graph-based approaches in quantitative investment. It allows users to define custom models that leverage various financial factors to predict the returns and risks of portfolios or single assets. These models are central to many advanced quantitative investment strategies and can be adapted to a wide range of use cases, from factor-based alpha generation to complex deep learning predictions.
+  通用模型是一个灵活且全面的框架，旨在整合量化投资中的因子（factor）型、模型（model）型和图（graph）型方法。它允许用户定义自定义模型，利用各种金融因子来预测投资组合或单一资产的收益和风险。这些模型是许多高级量化投资策略的核心，可以适应广泛的用例，从基于因子的alpha生成到复杂的深度学习预测。
 
-  Each general model incorporates the following components:
-  1. Name: The name of the model.
-  2. Description: A detailed description of the model.
-  3. Factors: The financial factors used as inputs, including their definitions and formulations.
-  4. Architecture: The structure of the machine learning, deep learning, or graph-based model.
-  5. Hyperparameters: The hyperparameters used in the model, such as learning rate, number of epochs, etc.
-  6. ModelType: The type of the model, "Tabular" for tabular data, "TimeSeries" for time series data, or "Graph" for graph data.
-  The general model should provide clear and detailed documentation of its factors, architecture, and hyperparameters. Each model should have a fixed architecture and hyperparameters to ensure reproducibility and consistency.
+  每个通用模型包含以下组件：
+  1. 名称：模型的名称。
+  2. 描述：模型的详细描述。
+  3. 因子：用作输入的金融因子，包括它们的定义和公式。
+  4. 架构：机器学习、深度学习或基于图模型的结构。
+  5. 超参数：模型中使用的超参数，如学习率、epoch数量等。
+  6. 模型类型：模型的类型，"表格型（Tabular）"用于表格数据，"时间序列型（TimeSeries）"用于时间序列数据，或"图型（Graph）"用于图数据。
+  通用模型应提供关于其因子、架构和超参数的清晰详细的文档。每个模型应有固定的架构和超参数以确保可重复性和一致性。
 
 general_model_interface: |-
-  Your python code should follow the interface to better interact with the user's system. It should be a pytorch model. 
-  Your code should contain several parts:
-  1. The import part: import the necessary libraries.
-  2. A class which is a sub-class of pytorch.nn.Module. This class should have an init function and a forward function which inputs a tensor and outputs a tensor.
-  3. Set a variable called "model_cls" to the class you defined.
+  你的Python代码应遵循接口以更好地与用户的系统交互。它应该是一个PyTorch模型。
+  你的代码应包含几个部分：
+  1. 导入部分：导入必要的库。
+  2. 一个类是pytorch.nn.Module的子类。这个类应该有init函数和forward函数，输入一个张量并输出一个张量。
+  3. 设置一个名为"model_cls"的变量为你定义的类。
 
-  The user will save your code into a python file called "model.py". Then the user imports model_cls in file "model.py" after setting the cwd into the directory:
+  用户会将你的代码保存到一个名为"model.py"的python文件中。然后用户会在设置cwd为目录后导入model_cls：
   ```python
   from model import model_cls
 
-  So your python code should follow the pattern:
+  所以你的Python代码应遵循以下模式：
 
   class XXXModel(torch.nn.Module):
     ...
   model_cls = XXXModel
 
-  The model has three types, "Tabular" for tabular data, "TimeSeries" for time series data, and "Graph" for graph data.
+  模型有三种类型："表格型（Tabular）"用于表格数据，"时间序列型（TimeSeries）"用于时间序列数据，"图型（Graph）"用于图数据。
 
-  The input shape to a tabular model is (batch_size, num_features).
-  The input shape to a time series model is (batch_size, num_features, num_timesteps).
-  The input to a graph model are two tensors. 
-  node_feature: a tensor of shape (batch_size, num_features)
-  edge_index: a tensor of shape (2, num_edges) 
+  表格模型的输入形状是(batch_size, num_features)。
+  时间序列模型的输入形状是(batch_size, num_features, num_timesteps)。
+  图模型的输入是两个张量。
+  node_feature：一个形状为(batch_size, num_features)的张量
+  edge_index：一个形状为(2, num_edges)的张量
   
-  The batch_size is a dynamic value which is determined by the input of the forward function.
+  batch_size是由forward函数的输入决定的动态值。
   
-  The output shape of the model should be (batch_size, 1).
+  模型的输出形状应该是(batch_size, 1)。
 
-  The "num_features", "num_timesteps" are static and will be provided to the model through the init function.
+  "num_features"和"num_timesteps"是静态的，将通过init函数提供给模型。
 
-  User will initialize the tabular model with the following code:
+  用户将使用以下代码初始化表格模型：
 
   model = model_cls(num_features=num_features)
 
-  User will initialize the time series model with the following code:
+  用户将使用以下代码初始化时间序列模型：
 
   model = model_cls(num_features=num_features, num_timesteps=num_timesteps)
 
-  User will initialize the graph model with the following code:
+  用户将使用以下代码初始化图模型：
 
   model = model_cls(num_features=num_features)
 
+  不会有其他参数传递给模型，所以给其他参数一个默认值或将它们设为静态。
 
-  No other parameters will be passed to the model, so give other parameters a default value or make them static.
+  在处理时间序列模型时，请记住对输入张量进行置换，因为输入张量的形状是(batch_size, num_features, num_timesteps)，而正常的时间序列模型期望输入张量的形状是(batch_size, num_timesteps, num_features)。
 
-  When dealing with a time series model, remember to permute the input tensor since the input tensor is in the shape of (batch_size, num_features, num_timesteps) and a normal time series model is expecting the input tensor in the shape of (batch_size, num_timesteps, num_features).
+  不要在你的Python代码中写任何try-except块。用户会捕获异常消息并向你提供反馈。同样，不要在代码中写main函数。用户将调用model_cls中的forward方法来获取输出张量。
 
-  Don't write any try-except block in your python code. The user will catch the exception message and provide the feedback to you. Also, don't write a main function in your python code. The user will call the forward method in the model_cls to get the output tensor.
-
-  Please note that your model should only use current features as input. The user will provide the input tensor to the model's forward function.
+  请注意，你的模型应该只使用当前特征作为输入。用户会将输入张量提供给模型的forward函数。
 
 general_model_output_format: |-
-  Your output should be a tensor with shape (batch_size, 1).
-  The output tensor should be saved in a file named "output.pth" in the same directory as your python file.
-  The user will evaluate the shape of the output tensor, so the tensor read from "output.pth" should be 8 numbers.
+  你的输出应该是一个形状为(batch_size, 1)的张量。
+  输出张量应保存在与你的python文件相同的目录中名为"output.pth"的文件中。
+  用户将评估输出张量的形状，因此从"output.pth"读取的张量应该是8个数字。
 
 general_model_simulator: |-
-  The models are not loaded and backtested. That said, pay attention to its architecture.
+  模型不会被加载和回测。也就是说，请注意其架构。
 
 general_model_rich_style_description: |-
-  ### [Model Research & Development Co-Pilot](#_scenario)
+  ### [模型研发与开发副驾驶](#_scenario)
 
-  #### [Overview](#_summary)
+  #### [概述](#_summary)
 
-  This demo automates the extraction and development of PyTorch models from academic papers. It supports various model types through two main components: Reader and Coder.
+  本演示自动化了从学术论文中提取和开发PyTorch模型的过程。它通过两个主要组件支持各种模型类型：阅读器（Reader）和编码器（Coder）。
   
-  #### [Workflow Components](#_rdloops)
+  #### [工作流组件](#_rdloops)
   
-  1. **[Reader](#_research)**
-      - Extracts model information from papers, including architectures and parameters.
-      - Converts content into a structured format using Large Language Models.
+  1. **[阅读器](#_research)**
+      - 从论文中提取模型信息，包括架构和参数。
+      - 使用大型语言模型将内容转换为结构化格式。
   
-  2. **[Evolving Coder](#_development)**
-      - Translates structured information into executable PyTorch code.
-      - Ensures correct tensor shapes with an evolving coding mechanism.
-      - Refines the code to match source specifications.
+  2. **[演化编码器](#_development)**
+      - 将结构化信息转换为可执行的PyTorch代码。
+      - 通过演化编码机制确保正确的张量形状。
+      - 细化代码以匹配源代码规范。

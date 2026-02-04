@@ -1,137 +1,137 @@
 workflow_coder:
   system: |-
-    You are a world-class data scientist and machine learning engineer with deep expertise in statistics, mathematics, and computer science.
-    Your knowledge spans cutting-edge data analysis techniques, advanced machine learning algorithms, and their practical applications to solve complex real-world problems.
+    你是一位世界级的数据科学家和机器学习工程师，在统计学、数学和计算机科学方面具有深厚的专业知识。
+    你的知识涵盖前沿的数据分析技术、先进的机器学习算法以及它们在解决复杂实际问题中的实际应用。
 
-    ## Task Description
+    ## 任务描述
     {{ task_desc }}
 
-    Here is the competition information for this task:
+    这是此任务的竞赛信息：
     {{ competition_info }}
 
     {% if queried_similar_successful_knowledge|length != 0 or queried_former_failed_knowledge|length != 0 %}
-    ## Relevant Information for This Task
+    ## 此任务的相关信息
     {% endif %}
 
     {% if queried_similar_successful_knowledge|length != 0 %}
-    --------- Successful Implementations for Similar Models ---------
-    ====={% for similar_successful_knowledge in queried_similar_successful_knowledge %} Model {{ loop.index }}:=====
+    --------- 相似模型的成功实现 ---------
+    ====={% for similar_successful_knowledge in queried_similar_successful_knowledge %} 模型 {{ loop.index }}：=====
     {{ similar_successful_knowledge.target_task.get_task_information() }}
-    =====Code:=====
+    =====代码=====
     {{ similar_successful_knowledge.implementation.file_dict["main.py"] }}
     {% endfor %} 
     {% endif %}
 
     {% if queried_former_failed_knowledge|length != 0 %}
-    --------- Previous Failed Attempts ---------
-    {% for former_failed_knowledge in queried_former_failed_knowledge %} Attempt {{ loop.index }}:
-    =====Code:=====
+    --------- 先前的失败尝试 ---------
+    {% for former_failed_knowledge in queried_former_failed_knowledge %} 尝试 {{ loop.index }}：
+    =====代码=====
     {{ former_failed_knowledge.implementation.file_dict["main.py"] }}
-    =====Feedback:=====
+    =====反馈=====
     {{ former_failed_knowledge.feedback }}
     {% endfor %}
     {% endif %}
 
-    ## Guidelines
-    1. Understand the User's Code Structure
-      - The user has written different Python functions that can load and preprocess data, execute feature engineering, train models, and ensemble them.
-      - Each functionality is in a separate Python file.
-    2. Your task is only to integrate the existing processes of load_data, feature, model, and ensemble into a complete workflow. Do not edit or modify the existing Python files. The final step should output the predictions in the required format.
-    3. The user may provide specific code organization rules and instructions. Ensure that the integration follows the given framework and structure.
-    4. After predicting the output, print the shape and other information of the output to stdout to help the evaluator assess the code.
-    5. You should avoid using logging module to output information in your generated code, and instead use the print() function.
+    ## 指南
+    1. 理解用户的代码结构
+      - 用户编写了不同的Python函数，可以加载和预处理数据、执行特征工程、训练模型并进行集成。
+      - 每个功能在单独的Python文件中。
+    2. 你的任务只是将load_data、feature、model和ensemble的现有过程整合成完整的工作流。不要编辑或修改现有的Python文件。最后一步应以所需的格式输出预测。
+    3. 用户可能提供特定的代码组织规则和指令。确保集成遵循给定的框架和结构。
+    4. 预测输出后，将输出的形状和其他信息打印到stdout，以帮助评估者评估代码。
+    5. 你应该避免在生成的代码中使用logging模块输出信息，而应使用print()函数。
     {% include "scenarios.data_science.share:guidelines.coding" %}
 
-    ## Output Format
+    ## 输出格式
     {% if out_spec %}
     {{ out_spec }}
     {% else %}
-    Please response the code in the following json format. Here is an example structure for the JSON output:
+    请按以下json格式回复代码。以下是JSON输出的示例结构：
     {
-        "code": "The Python code as a string."
+        "code": "Python代码作为字符串。"
     }
     {% endif %}
   
   user: |-
-    --------- Code Specification ---------
+    --------- 代码规范 ---------
     {{ code_spec }}
 
-    --------- load data code ---------
+    --------- 加载数据代码 ---------
     file: load_data.py
     {{ load_data_code }}
 
-    --------- feature engineering code ---------
+    --------- 特征工程代码 ---------
     file: feature.py
     {{ feature_code }}
 
-    --------- model training code ---------
-    Attention: The input and output of the model function is flexible. Training dataset is necessary, but validation and test dateset might be optional. The hyperparameters can either be passed as arguments or be set as default values in the function. You need to use the function correctly.
-    All model files share the same function name. Please import the model files with their name like: from {file_name} import {function_name}
+    --------- 模型训练代码 ---------
+    注意：模型函数的输入和输出是灵活的。训练数据集是必要的，但验证和测试数据集可能是可选的。超参数可以作为参数传递，也可以在函数中设置为默认值。你需要正确使用该函数。
+    所有模型文件共享相同的函数名称。请使用它们的名称导入模型文件：from {file_name} import {function_name}
     {{ model_codes }}
 
-    --------- ensemble code ---------
-    Note, we will check the index of the score.csv, so please use the model name as the index to feed into ensemble function.
+    --------- 集成代码 ---------
+    注意，我们将检查score.csv的索引，因此请使用模型名称作为索引提供给集成函数。
     file: ensemble.py
     {{ ensemble_code }}
 
     {% if latest_code %}
-    --------- Former code ---------
+    --------- 之前的代码 ---------
     {{ latest_code }}
     {% if latest_code_feedback is not none %}
-    --------- Feedback to former code ---------
+    --------- 之前代码的反馈 ---------
     {{ latest_code_feedback }}
     {% endif %}
-    The former code contains errors. You should correct the code based on the provided information, ensuring you do not repeat the same mistakes.
+    之前的代码包含错误。你应该根据提供的信息纠正代码，确保不重复相同的错误。
     {% endif %}
 
 workflow_eval:
   system: |-
-    You are a data scientist responsible for evaluating workflow code generation.
+    你是一位负责评估工作流代码生成的数据科学家。
 
-    ## Task Description
-    The user is trying to build a workflow in the following scenario:
+    ## 任务描述
+    用户正在尝试在以下场景中构建工作流：
     {{ scenario }}
 
-    The main code generation task is as follows:
+    主要代码生成任务如下：
     {{ task_desc }}
 
-    The user provides workflow information and its components.
-    The details on how to structure the workflow are given in the specification file:
+    用户提供工作流及其组件信息。
+    如何构建工作流的详细信息在规范文件中给出：
     ```markdown
     {{ spec }}
     ```
 
-    This workflow integrates multiple stages, including:
-    - Data loading
-    - Feature engineering
-    - Model training
-    - Ensembling
+    此工作流集成了多个阶段，包括：
+    - 数据加载
+    - 特征工程
+    - 模型训练
+    - 集成
 
-    ## Evaluation Scope
-    Your focus is to check whether the workflow code:
-    1. Executes successfully, correctly organizing components and generating a final submission.
-    2. Generates predictions in the correct format, ensuring they align with the **sample submission** structure!
+    ## 评估范围
+    你的重点是检查工作流代码是否：
+    1. 成功执行，正确组织组件并生成最终提交。
+    2. 以正确的格式生成预测，确保它们与**样本提交**结构对齐！
 
-    [Note] 
-    1. The individual components (data loading, feature engineering, model tuning, etc.) have already been evaluated by the user. You should only evaluate and improve the workflow code, unless there are critical issues in the components.
-    2. Model performance is NOT a concern in this evaluation—only correct execution and formatting matter.
-    3. As long as the execution does not exceed the time limit, ensure that the code uses cross-validation to split the training data and train the model. If cross-validation is not used, mention it in the execution section and set `final_decision` to `false`.
+    [注意]
+    1. 各个组件（数据加载、特征工程、模型调优等）已经由用户评估。你应该只评估和改进工作流代码，除非组件中存在关键问题。
+    2. 模型性能不是此评估的关注点——只有正确的执行和格式才重要。
+    3. 只要执行不超过时间限制，确保代码使用交叉验证来拆分训练数据并训练模型。如果没有使用交叉验证，在execution部分中提及它并将`final_decision`设置为`false`。
 
-    ## Evaluation Criteria
-    You will be given the workflow execution output (`stdout`) to determine correctness.  
+    ## 评估标准
+    你将获得工作流执行输出（stdout）来确定正确性。
     
-    Please respond with your feedback in the following JSON format and order
+    请按以下JSON格式和顺序回复你的反馈
     ```json
     {
-        "execution": "Describe whether the main workflow executed successfully, correctly integrating all components and generating the final submission. Include any errors or issues encountered, and append all error messages and full traceback details without summarizing or omitting any information.",
-        "return_checking": "Verify the generated files, particularly the submission file. Ensure that its format matches the sample submission, checking the index, column names, and CSV content.",
-        "code": "Provide feedback on code quality, readability, and adherence to the given specifications.",
+        "execution": "描述主工作流是否成功执行，正确集成了所有组件并生成了最终提交。包括遇到的任何错误或问题，并附加所有错误消息和完整的回溯细节，不要总结或遗漏任何信息。",
+        "return_checking": "验证生成的文件，特别是提交文件。确保其格式与样本提交匹配，检查索引、列名和CSV内容。",
+        "code": "提供代码质量、可读性和对给定规范遵守情况的反馈。",
         "final_decision": <true/false>
     }
     ```
-  
+   
   user: |-
-    --------- Workflow test stdout ---------
+    --------- 工作流测试stdout ---------
     {{ stdout }}
-    --------- Workflow code generated by user ---------
+    --------- 用户生成的工作流代码 ---------
     {{ code }}

@@ -132,7 +132,6 @@ class ScenarioAnalysis(BaseModel):
 
 
 class ScenarioChallenges(BaseModel):
-
     analysis: ScenarioAnalysis = Field(
         description="Analysis of provided information following the Core Analysis Dimensions."
     )
@@ -143,7 +142,6 @@ class ScenarioChallenges(BaseModel):
 
 
 class TraceAnalysisDetail(BaseModel):
-
     category: str = Field(
         description="Describe the specific area of this analysis in a few words, such as 'Explicit Suggestions', 'Feature Engineering', 'Presistent Issues'"
     )
@@ -153,7 +151,6 @@ class TraceAnalysisDetail(BaseModel):
 
 
 class TraceAnalysis(BaseModel):
-
     feedback: List[TraceAnalysisDetail] = Field(
         description="Analysis points derived from feedback on previous experiments."
     )
@@ -623,7 +620,7 @@ class DSProposalV2ExpGen(ExpGen):
     ) -> Dict:
         problem_formatted_str = ""
         for i, (problem_name, problem_dict) in enumerate(problems.items()):
-            problem_formatted_str += f"## {i+1}. {problem_name}\n"
+            problem_formatted_str += f"## {i + 1}. {problem_name}\n"
             problem_formatted_str += f"{problem_dict['problem']}\n"
             if "idea" in problem_dict:
                 idea_formatted_str = DSIdea(problem_dict["idea"]).to_formatted_str()
@@ -650,8 +647,8 @@ class DSProposalV2ExpGen(ExpGen):
         # knowledge retrieval
         if DS_RD_SETTING.enable_research_rag:
             rag_agent = RAGAgent(
-                system_prompt="""You are a helpful assistant.
-You help users retrieve relevant knowledge from community discussions and public code."""
+                system_prompt="""你是一个乐于助人的助手。
+你帮助用户从社区讨论和公开代码中检索相关知识。"""
             )
             knowledge = rag_agent.query(problem_formatted_str)
         else:
@@ -717,9 +714,8 @@ You help users retrieve relevant knowledge from community discussions and public
         """
         hypotheses_formatted = ""
         for i, (problem_name, hypothesis_data) in enumerate(hypothesis_dict.items()):
-
             problem_info = problems_dict.get(problem_name, {})
-            hypotheses_formatted += f"## {i+1}. **Problem Name:** {problem_name}\n"
+            hypotheses_formatted += f"## {i + 1}. **Problem Name:** {problem_name}\n"
             hypotheses_formatted += f"**Original Problem:** {problem_info.get('problem', 'Not available')}\n"
             hypotheses_formatted += f"**Component:** {hypothesis_data.get('component', 'Unknown')}\n"
             hypotheses_formatted += f"**Hypothesis:** {hypothesis_data.get('hypothesis', 'Not provided')}\n"
@@ -794,7 +790,7 @@ You help users retrieve relevant knowledge from community discussions and public
             hypothesis_data = hypothesis_dict[problem_name]
             critique_data = critiques_dict.get(problem_name, {})
 
-            hypothesis_critique_pairs += f"## Original Hypothesis {i+1}: {problem_name}\n"
+            hypothesis_critique_pairs += f"## Original Hypothesis {i + 1}: {problem_name}\n"
             hypothesis_critique_pairs += f"**Hypothesis:** {hypothesis_data.get('hypothesis', 'Not provided')}\n"
             hypothesis_critique_pairs += f"**Component:** {hypothesis_data.get('component', 'Unknown')}\n"
             hypothesis_critique_pairs += f"**Reasoning:** {hypothesis_data.get('reason', 'Not provided')}\n"

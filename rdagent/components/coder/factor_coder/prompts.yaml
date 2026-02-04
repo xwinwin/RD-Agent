@@ -1,209 +1,208 @@
 
 evaluator_code_feedback_v1_system: |-
-  User is trying to implement some factors in the following scenario:
+  用户正在尝试在以下场景中实现一些因子：
   {{ scenario }}
-  User will provide you the information of the factor.
+  用户将向你提供因子的信息。
 
-  Your job is to check whether user's code is align with the factor and the scenario.
-  The user will provide the source python code and the execution error message if execution failed.
-  The user might provide you the ground truth code for you to provide the critic. You should not leak the ground truth code to the user in any form but you can use it to provide the critic.
+  你的工作是检查用户的代码是否与因子和场景对齐。
+  用户将提供源代码，如果执行失败，还会提供执行错误消息。
+  用户可能向你提供真实代码以供你提供评论。你不应该以任何形式向用户泄露真实代码，但你可以使用它来提供评论。
 
-  User has also compared the factor values calculated by the user's code and the ground truth code. The user will provide you some analyze result comparing two output. You may find some error in the code which caused the difference between the two output.
+  用户还比较了用户的代码和真实代码计算的因子值。用户将向你提供一些分析两个输出的结果。你可能会发现代码中的某些错误导致两个输出之间的差异。
 
-  If the ground truth code is provided, your critic should only consider checking whether the user's code is align with the ground truth code since the ground truth is definitely correct.
-  If the ground truth code is not provided, your critic should consider checking whether the user's code is reasonable and correct.
+  如果提供了真实代码，你的评论应该只考虑检查用户的代码是否与真实代码对齐，因为真实代码肯定是正确的。
+  如果没有提供真实代码，你的评论应该考虑检查用户的代码是否合理和正确。
 
-  Notice that your critics are not for user to debug the code. They are sent to the coding agent to correct the code. So don't give any following items for the user to check like "Please check the code line XXX".
+  请注意，你的评论不是让用户调试代码。它们被发送给编码代理以纠正代码。所以不要提供任何让用户检查的项目，如"请检查代码第XXX行"。
 
-  You suggestion should not include any code, just some clear and short suggestions. Please point out very critical issues in your response, ignore non-important issues to avoid confusion. If no big issue found in the code, you can response "No critics found".
+  你的建议不应该包含任何代码，只是一些清晰而简短的建议。请在回复中指出非常关键的问题，忽略不重要的以避免混淆。如果代码中没有发现大问题，你可以回复"没有发现评论"。
   
-  You should provide the suggestion to each of your critic to help the user improve the code. Please response the critic in the following format. Here is an example structure for the output:
-  critic 1: The critic message to critic 1
-  critic 2: The critic message to critic 2
+  你应该为你的每条评论提供建议以帮助用户改进代码。请按照以下格式回复评论。以下是输出的示例结构：
+  评论1: 评论1的消息
+  评论2: 评论2的消息
 
 evaluator_code_feedback_v1_user: |-
-  --------------Factor information:---------------
+  --------------因子信息:---------------
   {{ factor_information }}
-  --------------Python code:---------------
+  --------------Python代码:---------------
   {{ code }}
-  --------------Execution feedback:---------------
+  --------------执行反馈:---------------
   {{ execution_feedback }}
   {% if value_feedback is not none %}
-  --------------Factor value feedback:---------------
+  --------------因子值反馈:---------------
   {{ value_feedback }}
   {% endif %}
   {% if gt_code is not none %}
-  --------------Ground truth Python code:---------------
+  --------------真实Python代码:---------------
   {{ gt_code }}
   {% endif %}
 
 evolving_strategy_factor_implementation_v1_system: |-
-  User is trying to implement some factors in the following scenario:
+  用户正在尝试在以下场景中实现一些因子：
   {{ scenario }}
-  Your code is expected to align the scenario in any form which means The user needs to get the exact factor values with your code as expected.
+  你的代码应该以任何形式与场景对齐，这意味着用户需要用你的代码获得与预期完全相同的因子值。
 
-  To help you write the correct code, the user might provide multiple information that helps you write the correct code:
-  1. The user might provide you the correct code to similar factors. Your should learn from these code to write the correct code.
-  2. The user might provide you the failed former code and the corresponding feedback to the code. The feedback contains to the execution, the code and the factor value. You should analyze the feedback and try to correct the latest code.
-  3. The user might provide you the suggestion to the latest fail code and some similar fail to correct pairs. Each pair contains the fail code with similar error and the corresponding corrected version code. You should learn from these suggestion to write the correct code.
+  为了帮助你写出正确的代码，用户可能会提供多条信息来帮助你写出正确的代码：
+  1. 用户可能向你提供类似因子的正确代码。你应该从这些代码中学习，写出正确的代码。
+  2. 用户可能向你提供先前失败的代码和相应的代码反馈。反馈包含执行、代码和因子值。你应该分析反馈并尝试纠正最新的代码。
+  3. 用户可能向你提供对最新失败代码的建议和一些类似的失败到正确的对。每个对包含具有类似错误的失败代码和相应的正确版本代码。你应该从这些建议中学习，写出正确的代码。
   
-  Your must write your code based on your former latest attempt below which consists of your former code and code feedback, you should read the former attempt carefully and must not modify the right part of your former code.
+  你必须根据你下面的最新尝试来写代码，这包括你的先前代码和代码反馈，你应该仔细阅读先前的尝试，绝不能修改先前代码的正确部分。
 
-  Notice that you should not add any other text before or after the json format.
+  请注意，你不应该在任何JSON格式之前或之后添加其他文本。
 
   {% if queried_former_failed_knowledge|length != 0 %}
-  --------------Your former latest attempt:---------------
-  =====Code to the former implementation=====
+  --------------你先前的最新尝试:---------------
+  =====先前实现的代码=====
   {{ queried_former_failed_knowledge[-1].implementation.all_codes }}
-  =====Feedback to the former implementation=====
+  =====对先前实现的反馈=====
   {{ queried_former_failed_knowledge[-1].feedback }}
   {% endif %}
 
-  Please response the code in the following json format. Here is an example structure for the JSON output:
+  请按照以下JSON格式回复代码。以下是JSON输出的示例结构：
   {
-      "code": "The Python code as a string."
+      "code": "Python代码作为字符串。"
   }
 
 evolving_strategy_factor_implementation_v2_user: |-
-  --------------Target factor information:---------------
+  --------------目标因子信息:---------------
   {{ factor_information_str }}
 
   {% if queried_similar_error_knowledge|length != 0 %}
   {% if error_summary_critics is none %}
-  Recall your last failure, your implementation met some errors.
-  When doing other tasks, you met some similar errors but you finally solve them. Here are some examples:
+  回忆你的上一次失败，你的实现遇到了一些错误。
+  当做其他任务时，你遇到了一些类似的错误，但最终你解决了它们。以下是一些例子：
   {% for error_content, similar_error_knowledge in queried_similar_error_knowledge %} 
-  --------------Factor information to similar error ({{error_content}}):---------------
+  --------------类似错误 ({{error_content}}) 的因子信息:---------------
   {{ similar_error_knowledge[0].target_task.get_task_information() }}
-  =====Code with similar error ({{error_content}}):=====
+  =====具有类似错误 ({{error_content}}) 的代码:=====
   {{ similar_error_knowledge[0].implementation.all_codes }}
-  =====Success code to former code with similar error ({{error_content}}):=====
+  =====先前具有类似错误 ({{error_content}}) 的成功代码:=====
   {{ similar_error_knowledge[1].implementation.all_codes }}
   {% endfor %}
   {% else %}
-  Recall your last failure, your implementation met some errors.
-  After reviewing some similar errors and their solutions, here are some suggestions for you to correct your code:
+  回忆你的上一次失败，你的实现遇到了一些错误。
+  在审查了一些类似的错误及其解决方案后，以下是一些纠正代码的建议：
   {{error_summary_critics}}
   {% endif %}
   {% endif %}
   {% if queried_similar_successful_knowledge|length != 0 %}
-  Here are some success implements of similar component tasks, take them as references:
-  --------------Correct code to similar factors:---------------
+  以下是一些类似组件任务的成功实现，将它们作为参考：
+  --------------类似因子的正确代码:---------------
   {% for similar_successful_knowledge in queried_similar_successful_knowledge %}
-  =====Factor {{loop.index}}:=====
+  =====因子 {{loop.index}}:=====
   {{ similar_successful_knowledge.target_task.get_task_information() }}
-  =====Code:=====
+  =====代码:=====
   {{ similar_successful_knowledge.implementation.all_codes }}
   {% endfor %}
   {% endif %}
   {% if latest_attempt_to_latest_successful_execution is not none %}
-  You have tried to correct your former failed code but still met some errors. Here is the latest attempt to the latest successful execution, try not to get the same error to your new code:
-  =====Your latest attempt=====
+  你尝试纠正先前失败的代码但仍然遇到了一些错误。以下是最新尝试到最新成功执行的尝试，试着不要在新代码中犯同样的错误：
+  =====你的最新尝试=====
   {{ latest_attempt_to_latest_successful_execution.implementation.all_codes }}
-  =====Feedback to your latest attempt=====
+  =====对你最新尝试的反馈=====
   {{ latest_attempt_to_latest_successful_execution.feedback }}
   {% endif %}
 
 evolving_strategy_error_summary_v2_system: |-
-  User is trying to implement some factors in the following scenario:
+  用户正在尝试在以下场景中实现一些因子：
   {{ scenario }}
-  User is doing the following task: 
+  用户正在执行以下任务：
   {{factor_information_str}}
 
-  You have written some code but it meets errors like the following:
+  你写了一些代码，但遇到了如下错误：
   {{code_and_feedback}}
 
-  The user has found some tasks that met similar errors, and their final correct solutions.
-  Please refer to these similar errors and their solutions, provide some clear, short and accurate critics that might help you solve the issues in your code.
+  用户发现了一些遇到类似错误的任务，以及它们的最终正确解决方案。
+  请参考这些类似的错误及其解决方案，提供一些清晰、简短和准确的评论，这些评论可能会帮助你解决代码中的问题。
 
-  You suggestion should not include any code, just some clear and short suggestions. Please point out very critical issues in your response, ignore non-important issues to avoid confusion. If no big issue found in the code, you can response "No critics found".
+  你的建议不应该包含任何代码，只是一些清晰而简短的建议。请在回复中指出非常关键的问题，忽略不重要的以避免混淆。如果代码中没有发现大问题，你可以回复"没有发现评论"。
 
   [NOTE]
-  1. When processing data, avoid time leakage.
+  1. 处理数据时，避免时间泄露。
 
-  Please response the critic in the following format. Here is an example structure for the output:
-  critic 1: The critic message to critic 1
-  critic 2: The critic message to critic 2
+  请按照以下格式回复评论。以下是输出的示例结构：
+  评论1: 评论1的消息
+  评论2: 评论2的消息
   
 evolving_strategy_error_summary_v2_user: |-
   {% if queried_similar_error_knowledge|length != 0 %}
   {% for error_content, similar_error_knowledge in queried_similar_error_knowledge %} 
-  --------------Factor information to similar error ({{error_content}}):---------------
+  --------------类似错误 ({{error_content}}) 的因子信息:---------------
   {{ similar_error_knowledge[0].target_task.get_task_information() }}
-  =====Code with similar error ({{error_content}}):=====
+  =====具有类似错误 ({{error_content}}) 的代码:=====
   {{ similar_error_knowledge[0].implementation.all_codes }}
-  =====Success code to former code with similar error ({{error_content}}):=====
+  =====先前具有类似错误 ({{error_content}}) 的成功代码:=====
   {{ similar_error_knowledge[1].implementation.all_codes }}
   {% endfor %}
   {% endif %}
 
 
 select_implementable_factor_system: |-
-  User is trying to implement some factors in the following scenario:
+  用户正在尝试在以下场景中实现一些因子：
   {{ scenario }}
-  Your job is to help the user select the easiest-to-implement factors. Some factors may be difficult to implement due to a lack of information or excessive complexity. The user will provide the number of factors you should pick and information about the factors, including their descriptions, formulas, and variable explanations.
-  User will provide you the former attempt to implement the factor and the feedback to the implementation. You need to carefully review your previous attempts. Some factors have been repeatedly tried without success. You should consider discarding these factors.
-  Please analyze the difficulties of the each factors and provide the reason and response the indices of selected implementable factor in the json format. Here is an example structure for the JSON output:
+  你的工作是帮助用户选择最容易实现的因子。由于信息缺乏或过于复杂，有些因子可能难以实现。用户将提供你应该选择的因子数量以及关于因子的信息，包括它们的描述、公式和变量解释。
+  用户将向你提供先前尝试实现因子和实现的反馈。你需要仔细审查你之前的尝试。有些因子已经反复尝试没有成功。你应该考虑放弃这些因子。
+  请分析每个因子的困难，并提供原因，并以JSON格式回复所选可实现因子的索引。以下是JSON输出的示例结构：
   {
-      "Analysis": "Analyze the difficulties of the each factors and provide the reason why the factor can be implemented or not."
-      "selected_factor": "The indices of selected factor index in the list, like [0, 2, 3].The length should be the number of factor left after filtering.",
+      "分析": "分析每个因子的困难，并提供因子可以或不能实现的原因。",
+      "selected_factor": "所选因子在列表中的索引，如[0, 2, 3]。长度应该是过滤后的因子数量。",
   }
 
 select_implementable_factor_user: |-
-  Number of factor you should pick: {{ factor_num }}
+  你应该选择的因子数量: {{ factor_num }}
   {% for factor_info in sub_tasks %} 
-  =============Factor index:{{factor_info[0]}}:=============
-  =====Factor name:=====
+  =============因子索引:{{factor_info[0]}}:=============
+  =====因子名称:=====
   {{ factor_info[1].factor_name }}
-  =====Factor description:=====
+  =====因子描述:=====
   {{ factor_info[1].factor_description }}
-  =====Factor formulation:=====
+  =====因子公式:=====
   {{ factor_info[1].factor_formulation }}
   {% if factor_info[2]|length != 0 %}
-  --------------Your former attempt:---------------
+  --------------你的先前尝试:---------------
   {% for former_attempt in factor_info[2] %}
-  =====Code to attempt {{ loop.index }}=====
+  =====尝试 {{ loop.index }} 的代码=====
   {{ former_attempt.implementation.all_codes }}
-  =====Feedback to attempt {{ loop.index }}=====
+  =====尝试 {{ loop.index }} 的反馈=====
   {{ former_attempt.feedback }}
   {% endfor %}
   {% endif %}
   {% endfor %}
 
 evaluator_output_format_system: |-
-  User is trying to implement some factors in the following scenario:
+  用户正在尝试在以下场景中实现一些因子：
   {{ scenario }}
-  User will provide you the format of the output. Please help to check whether the output is align with the format.
-  Please respond in the JSON format. Here is an example structure for the JSON output:
+  用户将向你提供输出的格式。请帮助检查输出是否与格式对齐。
+  请按JSON格式回复。以下是JSON输出的示例结构：
   {
       "output_format_decision": True,
-      "output_format_feedback": "The output format is correct."
+      "output_format_feedback": "输出格式是正确的。",
   }
 
 
 evaluator_final_decision_v1_system: |-
-  User is trying to implement some factors in the following scenario:
+  用户正在尝试在以下场景中实现一些因子：
   {{ scenario }}
-  User has finished evaluation and got some feedback from the evaluator.
-  The evaluator run the code and get the factor value dataframe and provide several feedback regarding user's code and code output. You should analyze the feedback and considering the scenario and factor description to give a final decision about the evaluation result. The final decision concludes whether the factor is implemented correctly and if not, detail feedback containing reason and suggestion if the final decision is False.
+  用户已完成评估并从评估器获得了一些反馈。评估器运行代码并获得因子值数据帧，并提供了一些关于用户代码和代码输出的反馈。你应该分析反馈并考虑场景和因子描述，以给出关于评估结果的最终决定。最终决定总结因子是否被正确实现，以及如果最终决定为False，是否包含详细反馈和原因。
 
-  The implementation final decision is considered in the following logic:
-  1. If the value and the ground truth value are exactly the same under a small tolerance, the implementation is considered correct.
-  2. If the value and the ground truth value have a high correlation on ic or rank ic, the implementation is considered correct.
-  3. If no ground truth value is provided, the implementation is considered correct if the code executes successfully (assuming the data provided is correct). Any exceptions, including those actively raised, are considered faults of the code. Additionally, the code feedback must align with the scenario and factor description. The implementation cannot be considered correct if the code execution failed, no matter what the reason is.
+  最终决定的实现逻辑如下：
+  1. 如果值和真实值在小容差下完全相同，则实现被认为是正确的。
+  2. 如果值和真实值在ic或rank ic上高度相关，则实现被认为是正确的。
+  3. 如果没有提供真实值，如果代码执行成功，则实现被认为是正确的（假设提供的数据是正确的）。任何异常，包括主动引发的异常，都被认为是代码的故障。此外，代码反馈必须与场景和因子描述对齐。如果代码执行失败，无论原因是什么，实现都不能被认为是正确的。
 
-  Please response the critic in the json format. Here is an example structure for the JSON output, please strictly follow the format:
+  请按JSON格式回复评论。以下是JSON输出的示例结构，请严格遵循格式：
   {
       "final_decision": True,
-      "final_feedback": "The final feedback message",
+      "final_feedback": "最终反馈消息",
   }
 
 evaluator_final_decision_v1_user: |-
-  --------------Factor information:---------------
+  --------------因子信息:---------------
   {{ factor_information }}
-  --------------Execution feedback:---------------
+  --------------执行反馈:---------------
   {{ execution_feedback }}
-  --------------Code feedback:---------------
+  --------------代码反馈:---------------
   {{ code_feedback }}
-  --------------Factor value feedback:---------------
+  --------------因子值反馈:---------------
   {{ value_feedback }}

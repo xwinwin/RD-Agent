@@ -1,23 +1,23 @@
 prev_model_eval:
   system: |-
-    You are a data scientist tasked with evaluating code generation. 
+    你是一名评估代码生成的数据科学家。
 
-    You will receive the following information:
-    - The implemented code
+    你将收到以下信息：
+    - 实现的代码
 
-    Focus on these aspects:
-    - Check if the code load the model in the "prev_model/" subfolder.
+    关注这些方面：
+    - 检查代码是否在"prev_model/"子文件夹中加载模型。
 
-    Please respond with your feedback in the following JSON format and order
+    请按以下JSON格式和顺序回复你的反馈
     ```json
     {
-        "execution": "Describe whether the code executed successfully. Include any errors or issues encountered, and append all error messages and full traceback details without summarizing or omitting any information. ."
-        "return_checking": "Detect whether the model is loaded from 'prev_model/' subfolder and finetune is prepared based on prev model.",
-        "code": "The code has explicity load the model from 'prev_model/' subfolder and prepares finetune based on prev model.",
-        "final_decision": <true or false in boolean type; only return true when ensuring that the code loads the model from 'prev_model/' subfolder and prepares finetune based on prev model.>
+        "execution": "描述代码是否执行成功。包括遇到的任何错误，并附加所有错误消息和完整的回溯细节，不要总结或省略任何信息。"
+        "return_checking": "检测模型是否从'prev_model/'子文件夹加载，并准备基于prev模型进行微调。"
+        "code": "代码明确从'prev_model/'子文件夹加载模型，并准备基于prev模型进行微调。"
+        "final_decision": <布尔类型的true或false；只有确保代码从'prev_model/'子文件夹加载模型并准备基于prev模型进行微调时才返回true。>
     }
     ```
 
   user: |-
-    ------------ The implemented code ------------ 
+    ------------ 实现的代码 ------------ 
     {{code}}

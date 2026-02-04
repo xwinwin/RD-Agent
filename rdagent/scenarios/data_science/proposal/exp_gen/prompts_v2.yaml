@@ -1,101 +1,101 @@
 scenario_problem:
   system: |-
     {% include "scenarios.data_science.share:scen.role" %}
-    The user is improving a Kaggle competition implementation iteratively. Each new iteration (trace) is typically a modification of the current overall State-of-the-Art (SOTA) solution. If a new trace's performance surpasses the current SOTA, it establishes a new SOTA. Otherwise, it is considered a failed experiment.
+    用户正在迭代改进Kaggle竞赛实现。每个新迭代（轨迹）通常是对当前最先进（SOTA）解决方案的修改。如果新轨迹的性能超越当前SOTA，它将建立新的SOTA。否则，它被视为失败实验。
 
-    You will be provided with:
-    1. A detailed competition scenario description;
-    2. The overall current SOTA implementation and its associated feedback, which represents the best-performing experiment from the entire history provided up to this point.
+    你将获得：
+    1. 详细的竞赛场景描述；
+    2. 当前整体SOTA实现及其相关反馈，代表了截至目前提供的整个历史中表现最好的实验。
 
-    Your task is to analyze the provided information (primarily the scenario and current SOTA, if available) and identify a concise list of **Key Challenges** or **Core Problems** relevant to achieving success in this competition and improving the target metric. Aim for **FEWER BUT BETTER** challenges (e.g., 2-3 critical challenges), focusing on the most impactful aspects that can be methodically addressed.
+    你的任务是分析提供的信息（主要是场景和当前的SOTA，如果可用），并识别与在此竞赛中取得成功和改进目标指标相关的**关键挑战**或**核心问题**的简明列表。目标是**少而精**的挑战（例如2-3个关键挑战），专注于可以系统解决的最有影响的方面。
 
-    ### Core Analysis Dimensions for Identifying Challenges
-    - **Gap Identification**: (If successful past solutions or common winning strategies are known/inferred) Examine what implicitly addressed problems or unexploited avenues these successful approaches highlight. These gaps can represent current challenges.
-    - **Domain-Implementation Coherence Check**: Identify instances where technical approaches might violate domain constraints, oversimplify complex relationships, or miss domain-specific nuances. These incoherencies are challenges.
-    {% if plan.draft is false %}- **SOTA Alignment Analysis**: Systematically compare the current SOTA implementation against dataset properties and domain knowledge to identify discrepancies or areas representing core challenges to overcome for enhancement.
-    {% else %}- **Scenario-First Focus**: Since SOTA implementation is available, the **primary identified challenge** should be foundational. It should focus on establishing a **reasonable baseline** that directly addresses the core task and evaluation metric. Avoid overly complex initial challenges.
+    ### 识别挑战的核心分析维度
+    - **差距识别**：（如果已知/推断过去成功的解决方案或常见的获胜策略）检查这些成功方法隐含解决的问题或未开发的途径。这些差距代表当前的挑战。
+    - **领域-实现一致性检查**：识别技术方法可能违反领域约束、过度简化复杂关系或遗漏领域特定细微差别的情况。这些不一致是挑战。
+    {% if plan.draft is false %}- **SOTA一致性分析**：系统地将当前SOTA实现与数据集属性和领域知识进行比较，识别差异或代表需要克服以实现增强的核心挑战领域。
+    {% else %}- **场景优先关注**：由于SOTA实现可用，**主要识别的挑战**应该是基础性的。它应该专注于建立直接解决核心任务和评估指标的**合理的基线**。避免在初始阶段提出过于复杂的挑战。
     {% endif %}
 
     {% if sibling_hypotheses is not none %}
-    ### Diversity To Your Siblings
-    You are working on exploration traces in parallel with others. To maximize exploration efficiency, your identified problems **Must** be **diverse** from those being explored in other traces. 
-    Here are the problems and hypotheses from your siblings:
+    ### 与兄弟姐妹的多样性
+    你正在与其他代理并行探索轨迹。为了最大化探索效率，你识别的问题**必须**与在其他轨迹中探索的问题**不同**。
+    以下是你兄弟姐妹的问题和假设：
     {% for hyp in sibling_hypotheses %}
-    === Sibling {{ loop.index }} Hypothesis ===
+    === 兄弟姐妹 {{ loop.index }} 的假设 ===
     {{ hyp }}
     {% endfor %}
-    Your generated problems **MUST** guide the agent towards different approaches, for example, different backbone models, different feature engineering methods, different ensemble strategies, different workflow optimizations, focus on efficiency etc. Avoid proposing challenges that would likely result in solutions similar to those listed above.
+    你生成的问题**必须**引导agent采取不同的方法，例如不同的骨干模型、不同的特征工程方法、不同的集成策略、不同的 workflow 优化、专注于效率等。避免提出可能导致与上述列出解决方案相似的挑战。
     {% endif %}
 
-    ## Key Challenges / Core Problems
-    You **MUST** categorize each identified challenge into one of the following two types. This categorization should be based on the primary driver or nature of the challenge:
-    1. **Dataset-Driven Challenge**: Challenges primarily derived from addressing or leveraging inherent structural or statistical properties of the dataset (e.g., mitigating imbalance, managing high dimensionality, specific feature engineering needs for data types like text or time-series, handling missing data, transforming skewed distributions, accounting for collinearity or outliers).
-    2. **Domain-Informed Challenge**: Challenges primarily derived from correctly applying actionable knowledge specific to the competition's domain. This includes the correct interpretation of data patterns based on domain context, domain-specific feature engineering, adhering to known domain constraints, or avoiding invalid assumptions that data analysis alone might not reveal.
+    ## 关键挑战 / 核心问题
+    你**必须**将每个识别的挑战分类为以下两种类型之一。此分类应基于挑战的主要驱动因素或性质：
+    1. **数据集驱动的挑战**：主要源自解决或利用数据集的固有结构或统计属性的挑战（例如，减轻不平衡、管理高维性、文本或时间序列等数据类型的特定特征工程需求、处理缺失数据、转换偏斜分布、考虑共线性或异常值）。
+    2. **领域知识驱动的挑战**：主要源自正确应用特定于竞赛领域的可操作知识的挑战。这包括基于领域上下文正确解释数据模式、领域特定特征工程、遵守已知领域约束，或避免数据分析可能无法揭示的无效假设。
 
-    ### Specification for each Identified Challenge
-    1. The challenge should be specific and fine-grained. Avoid general or vague statements.
-    2. The challenge should be technical or methodological. Focus on design and implementation strategies that need to be solved, not simple runtime bugs (unless the bug points to a deeper architectural challenge or a persistent efficiency problem).
-    3. The challenge must be strictly aligned with the improvement of the target metric.
-    {% if plan.draft is true %}4. If no SOTA is available, at least one identified challenge must guide the creation of a baseline model that is feasible, potentially competitive, and able to run to completion.{% endif %}
+    ### 每个识别的挑战的规范
+    1. 挑战应该是具体且细粒度的。避免笼统或模糊的陈述。
+    2. 挑战应该是技术性或方法论的。专注于需要解决的设计和实现策略，而不是简单的运行时错误（除非错误指向更深层次的架构挑战或持续效率问题）。
+    3. 挑战必须严格与目标指标的改进保持一致。
+    {% if plan.draft is true %}4. 如果没有可用的SOTA，至少一个识别的挑战必须指导创建可行的、具有竞争力且能够运行完成的基线模型。{% endif %}
 
 
     {% if problem_output_format is not none %}
-    ### Output Format
+    ### 输出格式
     {{ problem_output_format }}
     {% else %}
-    Please response in json format.
+    请按json格式回复。
     {% endif %}
 
   user: |-
-    # Scenario Description
+    # 场景描述
     {{ scenario_desc }}
 
-    # Current SOTA Implementation
+    # 当前SOTA实现
     {{ sota_exp_desc }}
 
 feedback_problem:
   system: |-
     {% include "scenarios.data_science.share:scen.role" %}
-    The user is improving a Kaggle competition implementation iteratively through traces. Each new trace is a modification of the State-of-the-Art (SOTA) implementation that was current at the time that trace was initiated. If a new trace's performance surpasses the SOTA it aimed to improve upon, it becomes the new SOTA. If not, it is considered a failed experiment.
+    用户正在通过轨迹迭代改进Kaggle竞赛实现。每个新轨迹是对启动该轨迹时当前SOTA实现的修改。如果新轨迹的性能超越它旨在改进的SOTA，它成为新的SOTA。如果没有，则被视为失败实验。
 
-    You will be provided with:
-    1. A detailed competition scenario description;
-    2. A history of previous successfully experiments and their associated feedbacks, indexed or ordered from oldest to newest; the latest SOTA experiment accumulates all the improvements from the previous successful experiments.
-    3. A history of previous failed experiments and their associated feedbacks, chronologically ordered, where each failed experiment did not surpass the SOTA that was current at the time of its execution. The failed experiments are based on the current SOTA implementation and are used to propose hypotheses for further performance improvements.
-    4. The overall current SOTA implementation and its associated feedback, which represents the best-performing experiment from the entire history provided up to this point.
+    你将获得：
+    1. 详细的竞赛场景描述；
+    2. 之前成功实验及其相关反馈的历史，按从旧到新排序或索引；最新的SOTA实验累积了所有先前成功实验的改进。
+    3. 之前失败实验及其相关反馈的历史，按时间顺序排列，每个失败实验都没有超越其执行时当前的SOTA。失败实验基于当前SOTA实现，用于提出进一步性能改进的假设。
+    4. 当前整体SOTA实现及其相关反馈，代表了截至目前提供的整个历史中表现最好的实验。
 
-    Your task is to analyze all this provided historical information and extract **Key Learnings and Unresolved Challenges** from the experiment history. These should guide concrete improvements in subsequent iterations.
+    你的任务是分析所有这些提供的历史信息，并从实验历史中提取**关键学习和未解决的挑战**。这些应该指导后续迭代中的具体改进。
 
-    ## Key Learnings and Unresolved Challenges
+    ## 关键学习和未解决的挑战
 
     {% if inject_diverse %}
-    ### Focus on Diversity!!
-    Diversity is very critical in the analysis of scenario problems. You should closely check the history of previous experiments and feedbacks, and try to explore the problems/hypotheses that are not covered by the previous experiments.
-    1. Check the previous experiments and feedbacks to find the problems that are not covered by the previous experiments.
-    2. Check the current SOTA implementation and feedback to find the problems that are not covered by the current SOTA implementation.
-    3. Do not do incremental exploration on the previous problems.
+    ### 专注于多样性!!
+    多样性在场景问题分析中非常关键。你应该密切检查先前实验和反馈的历史，并尝试探索先前实验未涵盖的问题/假设。
+    1. 检查先前的实验和反馈，找到先前实验未涵盖的问题。
+    2. 检查当前SOTA实现和反馈，找到当前SOTA实现未涵盖的问题。
+    3. 不要对先前的问题进行增量探索。
     {% endif %}
 
-    ### Definition
-    Key Learnings and Unresolved Challenges are specific, fine-grained technical or methodological observations, persistent issues, or patterns identified within previous experiments or the current SOTA implementation. These are primarily derived from explicit feedback, code analysis, or patterns in the trace history, and should highlight problems that need solving or learnings that should inform future hypotheses.
+    ### 定义
+    关键学习和未解决的挑战是具体的、细粒度的技术或方法论观察、持续性问题，或在先前实验或当前SOTA实现中识别的模式。这些主要源自明确的反馈、代码分析或轨迹历史中的模式，应突出需要解决的问题或应指导未来假设的学习。
 
-    ### Guidelines for Identification
-    Here are guidelines to help you identify these Learnings and Challenges:
+    ### 识别指南
+    以下是帮助你识别这些学习和挑战的指南：
 
-    1. **Feedback Analysis**:
-      - **Explicit Issues/Suggestions as Challenges**: Extract critical issues, errors (especially those pointing to deeper problems like resource limits or incorrect submission formats if not easily fixed), or direct suggestions from feedback that represent unresolved problems.
-      - **Implicit Gaps as Challenges**: Infer unaddressed points, shortcomings, or areas for improvement implied by feedback that constitute ongoing challenges.
-      - **Time/Memory Constraints as Critical Challenges**: If previous experiments indicate failures due to time/memory limitations, or inefficient resource usage, this **MUST** be listed as a critical challenge. This includes identifying if the current SOTA or failed experiments are too complex for the given time limits.
+    1. **反馈分析**：
+      - **明确的问题/建议作为挑战**：从反馈中提取关键问题、错误（特别是指向更深层问题的问题，如资源限制或不容易修复的提交格式错误），或代表未解决问题的直接建议。
+      - **隐含的差距作为挑战**：推断反馈暗示的未解决的问题、缺点或需要改进的领域，构成持续的挑战。
+      - **时间/内存约束作为关键挑战**：如果先前实验指示由于时间/内存限制或资源使用效率低下而失败，这**必须**列为关键挑战。这包括识别当前SOTA或失败实验对于给定时间限制是否过于复杂。
 
-    2. **Implementation Review (of SOTA or relevant past experiments)**:
-      - **Suboptimal Design as Challenges**: Identify potentially suboptimal feature selection, model architecture, hyperparameters, ensemble strategy, training/validation processes that appear as recurring problems or limit performance, framing them as challenges to be addressed.
-      - **Common Implementation Issues**: Note the coding issues that are blocking for receiving a reasonable result. For example, the submission format was repeatedly incorrect despite attempts to fix it, this is an unresolved challenge related to the implementation.
+    2. **实现审查（来自SOTA或相关过去的实验）**：
+      - **次优设计作为挑战**：识别可能次优的特征选择、模型架构、超参数、集成策略、训练/验证过程，这些表现为反复出现的问题或限制性能，将它们框定为需要解决的挑战。
+      - **常见实现问题**：注意阻碍获得合理结果的编码问题。例如，提交格式反复不正确，这是与实现相关的未解决挑战。
 
-    3. **Trace History Analysis (Trends & Patterns as Challenges)**:
-      - **Persistent Issues/Errors as Challenges**: Flag unresolved negative patterns, errors (e.g., recurrent `zipfile.BadZipFile`, CUDA label errors, submission format mismatches if they persist after attempts to fix), or suboptimal outcomes that recur across multiple experiment traces. These represent core unresolved challenges.
-      - **Ineffective/Partial Fixes**: Highlight if previous changes intended to solve a problem were only partially successful or ineffective, meaning the core challenge remains.
-      - **Unexplored Promising Directions**: Identify potentially valuable approaches (e.g., alternative feature sets, different model families, advanced optimization techniques) that were hinted at by feedback, briefly tried without full exploration, or represent logical next steps given the trajectory of past experiments.
-      - **Constraint Violations/Inefficiencies as Challenges**: Explicitly note any unaddressed time or memory constraint violations or significant computational inefficiencies as critical challenges that need strategic solutions.
+    3. **轨迹历史分析（趋势和模式作为挑战）**：
+      - **持续的问题/错误作为挑战**：标记未解决的负面模式、错误（例如反复出现的 `zipfile.BadZipFile`、CUDA标签错误、提交格式不匹配如果它们在尝试修复后持续），或跨多个实验轨迹反复出现的次优结果。这些代表核心未解决的挑战。
+      - **无效/部分修复**：强调如果先前旨在解决问题的更改仅部分成功或无效，意味着核心挑战仍然存在。
+      - **未探索的有前途的方向**：识别可能有价值的方法（例如替代特征集、不同的模型族、高级优化技术），这些方法由反馈暗示、简要尝试而未充分探索，或代表给定过去实验轨迹逻辑上的下一步。
+      - **约束违反/效率低下作为挑战**：明确注意任何未解决的时间或内存约束违反或显著的计算效率低下，作为需要战略解决方案的关键挑战。
 
     ### Specification for each Learning/Challenge
     1. The Learning/Challenge must be specific, actionable, and evidence-based (tied to feedback, code, or trace history).
@@ -132,170 +132,205 @@ feedback_problem:
     # Current SOTA Implementation
     {{ sota_exp_desc }}
 
+    ### 每个学习/挑战的规范
+    1. 学习/挑战必须是具体的、可操作的，并且有证据支持（与反馈、代码或轨迹历史相关）。
+    2. 它应该专注于需要解决的技术或方法论问题。
+    3. 明确陈述学习内容或阐述挑战。
+    4. 解决挑战或应用学习应该对目标指标或成功执行有合理的积极影响。
+    5. 挑战必须严格与目标指标的改进保持一致。
+     
+    {% if sibling_hypotheses is not none %}
+    ### 与兄弟姐妹的多样性
+    你正在与其他代理并行探索轨迹。为了最大化探索效率，你识别的问题**必须**与在其他轨迹中探索的问题**不同**。
+    以下是你兄弟姐妹的问题和假设：
+    {% for hyp in sibling_hypotheses %}
+    === 兄弟姐妹 {{ loop.index }} 的假设 ===
+    {{ hyp }}
+    {% endfor %}
+    你生成的问题**必须**引导agent采取不同的方法，例如不同的骨干模型、不同的特征工程方法、不同的集成策略、不同的 workflow 优化、专注于效率等。避免提出可能导致与上述列出解决方案相似的挑战。
+    {% endif %}
+     
+    {% if problem_output_format is not none %}
+    ### 输出格式
+    {{ problem_output_format }}
+    {% else %}
+    请按json格式回复。
+    {% endif %}
+
+  user: |-
+    # 场景描述
+    {{ scenario_desc }}
+
+    # 先前的实验和反馈
+    {{ exp_and_feedback_list_desc }}    
+
+    # 当前SOTA实现
+    {{ sota_exp_desc }}
+
 hypothesis_gen:
   system: |-
     {% include "scenarios.data_science.share:scen.role" %}
-    The user is iteratively improving a Kaggle competition implementation. Each new iteration (trace) is a modification of the current State-of-the-Art (SOTA). If a new trace surpasses the current SOTA, it becomes the new SOTA. Otherwise, it's a failed experiment.
-    You will be provided with:
-    1. A detailed competition scenario description.
-    2. A history of previous successfully experiments and their associated feedbacks, indexed or ordered from oldest to newest; the latest SOTA experiment accumulates all the improvements from the previous successful experiments.
-    3. A history of previous failed experiments and their associated feedbacks, chronologically ordered, where each failed experiment did not surpass the SOTA that was current at the time of its execution. The failed experiments are based on the current SOTA implementation and are used to propose hypotheses for further performance improvements.
-    4. The current SOTA implementation and feedback (the latest successful experiment).
-    5. A list of identified **Challenges** from history), which we will refer to as "Identified Challenges" below.
+    用户正在迭代改进Kaggle竞赛实现。每个新迭代（轨迹）是对当前最先进（SOTA）的修改。如果新轨迹超越当前SOTA，则成为新的SOTA。否则，就是失败实验。
+    你将获得：
+    1. 详细的竞赛场景描述。
+    2. 之前成功实验及其相关反馈的历史，按从旧到新排序或索引；最新的SOTA实验累积了所有先前成功实验的改进。
+    3. 之前失败实验及其相关反馈的历史，按时间顺序排列，每个失败实验都没有超越其执行时当前的SOTA。失败实验基于当前SOTA实现，用于提出进一步性能改进的假设。
+    4. 当前SOTA实现和反馈（最新的成功实验）。
+    5. 从历史中识别的**挑战**列表，我们将在下文中称之为"已识别的挑战"。
 
-    Your task is to perform two main steps:
-    1. **Hypothesis Proposal**: For each relevant Identified Challenge, propose one specific, testable hypothesis.
-    2. **Hypothesis Evaluation**: Evaluate each proposed hypothesis across multiple dimensions.
+    你的任务是执行两个主要步骤：
+    1. **假设提出**：针对每个相关的已识别挑战，提出一个具体的、可测试的假设。
+    2. **假设评估**：在多个维度上评估每个提出的假设。
 
     {% if enable_idea_pool %}
-    To help you propose hypotheses, the user may provide a list of ideas for each Identified Challenge. These ideas are methods or techniques from successful SOTA implementations in other competitions.
-    Evaluate these ideas: they might help address the Identified Challenges and improve the current SOTA. You must decide whether to use them. If you adapt a provided idea for a specific Challenge into your hypothesis, ensure you clearly state this by setting the 'inspired' flag to True for that hypothesis.
+    为了帮助你提出假设，用户可能为每个已识别的挑战提供想法列表。这些想法是其他竞赛中成功SOTA实现的方法或技术。
+    评估这些想法：它们可能有助于解决已识别的挑战并改进当前的SOTA。你必须决定是否使用它们。如果你将提供的想法适应到特定挑战的假设中，请确保通过将该假设的'inspired'标志设置为True来明确说明这一点。
     {% endif %}
 
-    # Task 1: Hypothesis Proposal
-    First note that the user might provide a list of challenges containing duplicates. You should only propose one hypothesis for each unique challenge. If a challenge is a duplicate of a previous one, you can skip it.
-    For each Identified Challenge, propose one hypothesis corresponding to the Challenge, aimed at improving the current SOTA implementation or establishing a robust initial SOTA.
+    # 任务1：假设提出
+    首先注意，用户可能提供包含重复项的挑战列表。你应该只为每个唯一的挑战提出一个假设。如果挑战是先前挑战的重复，你可以跳过它。
+    对于每个已识别的挑战，提出与该挑战对应的假设，旨在改进当前SOTA实现或建立稳健的初始SOTA。
 
-    ## 1.1. Steps to Hypothesize
-    Follow these steps to formulate effective hypotheses:
+    ## 1.1. 假设步骤
+    遵循以下步骤制定有效的假设：
 
-    1. **Understanding the Challenge**:
-      - Analyze the Identified Challenge to understand its root cause and potential impact on the competition's target metric or successful execution.
-      - If the Challenge stems from past experiments (SOTA or failed), review the specifics of those experiments to ensure the proposed hypothesis offers a novel, more effective, or correctly implemented solution.
-      - If the Challenge relates to persistent problems from failed experiments (e.g., experiments consistently failed due to time/memory constraints, or recurrent errors like incorrect data loading or submission formats), your hypothesis MUST propose a direct and robust tentative solution.
+    1. **理解挑战**：
+      - 分析已识别的挑战以了解其根本原因及其对竞赛目标指标或成功执行的潜在影响。
+      - 如果挑战源于过去的实验（SOTA或失败），回顾这些实验的具体情况，确保提出的假设提供新颖、更有效或正确实施的解决方案。
+      - 如果挑战涉及失败实验中持续存在的问题（例如，实验由于时间/内存限制反复失败，或反复出现的错误如不正确的数据加载或提交格式），你的假设**必须**提出直接且稳健的试探性解决方案。
     {% if plan.draft is true %}
-    2. **Drafting the First Implementation (if no SOTA exists)**:
-      - If there is no SOTA implementation yet (i.e., you are drafting the first implementation based on a foundational Challenge identified in the previous step), your primary hypothesis should focus on developing a baseline model that directly addresses the foundational Challenge and can run to completion reliably.
-      - This initial hypothesis should define the core data processing, feature engineering, model choice, and submission generation steps in a clear and executable way. Avoid introducing unnecessary complexity in the first version, but you are not restricted to overly simple models—a reasonable, competitive baseline is acceptable as long as it is likely to run reliably.
+    2. **起草第一个实现（如果不存在SOTA）**：
+      - 如果尚不存在SOTA实现（即，你正在根据上一步中识别的基本挑战起草第一个实现），你的主要假设应专注于开发直接解决基本挑战并能可靠运行的基线模型。
+      - 这个初始假设应清晰且可执行地定义核心数据处理、特征工程、模型选择和提交生成步骤。在第一个版本中避免引入不必要的复杂性，但你不受限于过于简单的模型——只要可能可靠运行，合理且具有竞争力的基线是可以接受的。
     {% endif %}
-    {% if plan.draft is true %}3{% else %}2{% endif %}. **Actionable Changes**:
-      - If a Challenge involves underperforming models (e.g., in an ensemble), propose specific actions like removing or replacing those models.
-      - If a Challenge relates to hyperparameter tuning, recommend a specific method or strategy (e.g., "Use Optuna to perform hyperparameter tuning on the LightGBM model to address the 'suboptimal hyperparameter' challenge").
-      - If a Challenge points to data loading, preprocessing, or submission format errors, the hypothesis must detail the exact changes required to rectify these issues.
+    {% if plan.draft is true %}3{% else %}2{% endif %}. **可操作的更改**：
+      - 如果挑战涉及表现不佳的模型（例如在集成中），提出具体的操作，如移除或替换这些模型。
+      - 如果挑战与超参数调优相关，推荐具体的方法或策略（例如，"使用Optuna对LightGBM模型进行超参数调优以解决'次优超参数'挑战"）。
+      - 如果挑战指向数据加载、预处理或提交格式错误，假设必须详细说明纠正这些问题所需的确切更改。
     {% if enable_idea_pool %}
-    4. **Idea Reference**: Provided ideas are methods, techniques, or tricks from high-performing implementations in other competitions addressing similar problems. Use them as inspiration if you find them suitable for the current Challenge.
+    4. **想法参考**：提供的想法是来自其他竞赛中处理类似问题的高性能实现的方法、技术或技巧。如果发现它们适合当前挑战，使用它们作为灵感。
     {% endif %}
 
-    ## 1.2. Guidelines for Writing Hypotheses
+    ## 1.2. 编写假设的指南
 
-    1. **Be Specific and Decisive**:
-      - Clearly state the exact, unambiguous change(s) being proposed. Avoid vague goals like "improve the model" or "optimize the pipeline."
-      - The hypothesis must propose a single, clear course of action. Do not suggest alternatives (e.g., "try method A or method B").
-      - The hypothesis statement must be direct and definitive, without phrases like "for example," "e.g.," "might involve," "consider," "try," or "explore."
-      - The hypothesis must be more informative and decisive than the Challenge it addresses. It should not simply restate the Challenge or suggest a general approach without specifics.
-    2. **Ensure Testability and Actionability**:
-      - The hypothesis must describe an action or change that can be practically implemented and tested.
-      - If the hypothesis is about improving SOTA, it should clearly state the expected improvement, typically related to a measurable performance metric or successful execution.
-      - If the hypothesis is about establishing the first solution, it should clearly outline the expected outcome -- RUNNABILITY and CORRECTNESS. Prioritize getting a valid submission out, even with a very basic model or pipeline.
-    3. **Align with Current SOTA and Identified Challenges**:
-      - The hypothesis must be directly relevant to improving the *current* State-of-the-Art (SOTA) implementation or establishing a new SOTA if none exists.
-      - It must directly address one of the `Identified Challenges` provided as input.
-    4. **Maintain Singular Focus within Hypothesis**:
-      - If a hypothesis involves multiple adjustments, these must be tightly correlated and contribute to a single, unified conceptual change addressing the core of the Identified Challenge.
-      - Avoid bundling multiple independent or unrelated ideas into a single hypothesis. Each hypothesis should test one core concept.
-    5. **Address the Overall Pipeline (for Pipeline-Focused Tasks)**:
-      - The hypothesis should address improvements to the end-to-end pipeline.
-      - It can propose coordinated changes across multiple parts of the SOTA implementation if these are necessary to achieve a significant pipeline-level improvement to address the Challenge. (Note: Even for pipeline-focused hypotheses, you will still select the single *most relevant* primary component tag during the evaluation task.)
-    
+    1. **具体且果断**：
+      - 清楚陈述提出的确切、明确的更改。避免"改进模型"或"优化管道"等模糊目标。
+      - 假设必须提出单一、清晰的行动方案。不要建议替代方案（例如，"尝试方法A或方法B"）。
+      - 假设陈述必须是直接且确定的，不包含"例如"、"e.g."、"可能涉及"、"考虑"、"尝试"或"探索"等短语。
+      - 假设必须比它所解决的挑战更具信息性和果断性。它不应该只是重述挑战或在未提供具体细节的情况下建议一般方法。
+    2. **确保可测试性和可操作性**：
+      - 假设必须描述可以实际实施和测试的操作或更改。
+      - 如果假设是关于改进SOTA，它应该清楚说明预期的改进，通常与可测量的性能指标或成功执行相关。
+      - 如果假设是关于建立第一个解决方案，它应该清楚概述预期结果——**可运行性**和**正确性**。优先获得有效提交，即使使用非常基础的模型或管道。
+    3. **与当前SOTA和已识别的挑战保持一致**：
+      - 假设必须直接与改进*当前*最先进（SOTA）实现相关，或在没有SOTA时建立新的SOTA。
+      - 它必须直接解决作为输入提供的`已识别的挑战`之一。
+    4. **在假设内保持单一关注点**：
+      - 如果假设涉及多个调整，这些必须紧密相关并有助于解决已识别挑战核心的单一、统一的概念性更改。
+      - 避免将多个独立或不相关的想法捆绑到单个假设中。每个假设应该测试一个核心概念。
+    5. **解决整体管道（对于管道聚焦任务）**：
+      - 假设应该解决端到端管道的改进。
+      - 如果这些对于实现显著的管道级改进以解决挑战是必要的，它可以提出跨SOTA实现多个部分的协调更改。（注意：即使对于管道聚焦的假设，你仍将在评估任务期间选择单个*最相关*的主要组件标签。）
+     
     {% if former_user_instructions_str is not none %}
-    ## 1.3. Mandatory Consideration of Past User Instructions
-    The user has provided specific instructions in previous experiments. These instructions may contain critical insights or constraints that must be considered when formulating your hypotheses. Carefully review the following past user instructions and ensure that your proposed hypotheses align with these directives:
+    ## 1.3. 必须考虑过去的用户指令
+    用户在先前的实验中提供了具体说明。这些说明可能包含制定假设时必须考虑的关键洞察或约束。仔细审查以下过去的用户指令，确保你提出的假设与这些指令一致：
     {{ former_user_instructions_str }}
     {% endif %}
 
-    # Task 2: Hypothesis Evaluation
-    After proposing one hypothesis for each relevant Identified Challenge, evaluate each one.
+    # 任务2：假设评估
+    在为每个相关的已识别挑战提出一个假设后，评估每个假设。
 
-    ## 2.1. Evaluation Instruction
-    For each individual hypothesis you proposed in Task 1, perform the following two evaluation steps:
+    ## 2.1. 评估说明
+    对于你在任务1中提出的每个个人假设，执行以下两个评估步骤：
 
-    1. **Assign a Component Tag:** Assign a single component tag to the hypothesis. Choose the **single most relevant** tag from the official list below, even if the hypothesis appears to touch upon multiple areas. Use the following detailed descriptions to understand the scope and boundaries of each component.
+    1. **分配组件标签：** 为假设分配单个组件标签。从以下官方列表中选择**最相关**的单个标签，即使假设似乎涉及多个领域。使用以下详细描述来理解每个组件的范围和边界。
 
-      - **`DataLoadSpec`**: Responsible for loading raw competition data, ensuring data is converted to the correct types, and potentially providing an initial exploratory data analysis (EDA) summary. (e.g., fixing `zipfile.BadZipFile` by improving loading logic).
-      - **`FeatureEng`**: Focuses on transforming raw data into meaningful features suitable for model consumption. Key responsibilities include maintaining data shape consistency, preventing data leakage during feature creation, and optimizing features for model performance. Feature engineering should be model-agnostic.
-      - **`Model`**: Involves model building (developing new models to address the problem), model tuning (optimizing existing models for better performance), or model removal. This component also handles data operations or augmentations closely tied to a specific model framework (e.g., PyTorch `Datasets` & `DataLoaders`, TensorFlow `tf.data`, or fixing CUDA label errors by ensuring correct label mapping before loss calculation).
-      - **`Ensemble`**: Combines predictions from multiple models using various ensemble strategies.
-      - **`Workflow`**: Integrates all pipeline components, orchestrating the flow from data loading through to final output generation (e.g., correcting `submission.csv` column names or structure, managing overall pipeline execution logic for efficiency).
+      - **`DataLoadSpec`**：负责加载原始竞赛数据，确保数据转换为正确的类型，并可能提供初始探索性数据分析（EDA）摘要。（例如，通过改进加载逻辑修复 `zipfile.BadZipFile`）。
+      - **`FeatureEng`**：专注于将原始数据转换为适合模型消费的有意义特征。关键职责包括保持数据形状一致性、防止特征创建过程中的数据泄露，以及为模型性能优化特征。特征工程应该是模型无关的。
+      - **`Model`**：涉及模型构建（开发新模型解决问题）、模型调优（优化现有模型以获得更好性能）或模型移除。此组件还处理与特定模型框架紧密相关的数据操作或增强（例如，PyTorch `Datasets` & `DataLoaders`、TensorFlow `tf.data`，或通过确保损失计算前正确的标签映射来修复CUDA标签错误）。
+      - **`Ensemble`**：使用各种集成策略组合多个模型的预测。
+      - **`Workflow`**：集成所有管道组件，协调从数据加载到最终输出生成的过程（例如，纠正 `submission.csv` 列名或结构，管理整体管道执行逻辑以提高效率）。
 
-    2. **Score the Hypothesis:** For each hypothesis, provide a score from 1 (lowest/worst) to 10 (highest/best) on each of the following five dimensions. Base your scores on all provided information.
-      - **Challenge-Hypothesis Alignment (Score: 1-10):** How directly and effectively does the hypothesis address the core issues of the `Identified Challenge` it targets? A higher score means a stronger, more direct alignment.
-      - **Expected Impact (Score: 1-10):** What is the estimated magnitude of improvement (e.g., in the primary competition metric, efficiency, robustness, or successful execution) if this hypothesis is successfully implemented? Higher scores for greater positive impact.
-      - **Novelty (Score: 1-10):** How innovative or original is this hypothesis when compared to the approaches and ideas evident in the `previous SOTA experiments` and `previous failed experiments`? Assign a score of 1 if the hypothesis is a repeat or substantially similar to a previously attempted hypothesis (whether successful or failed), UNLESS the previous attempt clearly failed due to a trivial implementation bug and the current hypothesis proposes the correct implementation of the same core idea.
-      - **Feasibility (Score: 1-10):** How easily and practically can this hypothesis be implemented and *run to completion* within the existing SOTA codebase and operational constraints (e.g., allowed time for training/inference, available compute resources, overall complexity)? Higher scores for easier implementation and higher likelihood of successful execution.
-      - **Risk-Reward Balance (Score: 1-10):** Considering the potential for significant improvement (reward) versus the probability of failure, negative side-effects, or excessive resource consumption (risk), how optimal is this balance? A high score indicates a favorable balance.
-      - **Prioritization for Critical Challenges:** If a hypothesis directly and credibly addresses a **critical Challenge that caused prior experiment failures** (e.g., timeout, persistent data loading errors, incorrect submission format preventing any score), its **Expected Impact** and **Risk-Reward Balance** should generally be scored highly (e.g., 8-10), and **Feasibility** should also be high if the proposed solution is indeed simpler, more direct, or more efficient. This ensures such critical hypotheses are prioritized.
+    2. **为假设打分：** 对于每个假设，在以下五个维度上提供从1（最低/最差）到10（最高/最好）的分数。基于所有提供的信息进行评分。
+      - **挑战-假设一致性（分数：1-10）：** 假设在多大程度上直接有效地解决了它所针对的`已识别挑战`的核心问题？越直接、越强的一致性，分数越高。
+      - **预期影响（分数：1-10）：** 如果这个假设成功实施，预期的改进幅度（例如，在主要竞赛指标、效率、健壮性或成功执行方面）是多少？积极影响越大，分数越高。
+      - **新颖性（分数：1-10）：** 与`先前SOTA实验`和`先前失败实验`中明显的方法和想法相比，这个假设有多创新或原创？如果假设是先前尝试的重复或实质相似（无论成功与否），分配分数为1，除非先前尝试明显由于微不足道的实施错误而失败，而当前假设提出了相同核心思想的正确实施。
+      - **可行性（分数：1-10）：** 这个假设在现有SOTA代码库和操作约束内（例如允许的训练/推理时间、可用计算资源、整体复杂性）有多容易和多实际地实施*运行完成*？越容易实施和成功执行可能性越高，分数越高。
+      - **风险-回报平衡（分数：1-10）：** 考虑到显著改进的潜力（回报）与失败、负面影响或过度资源消耗的风险（风险）之间的比较，这个平衡有多优化？高分数表示有利的平衡。
+      - **关键挑战的优先级：** 如果假设直接且可信地解决了**导致先前实验失败的关键挑战**（例如超时、持续的数据加载错误、阻止任何分数的不正确提交格式），其**预期影响**和**风险-回报平衡**通常应被评高分（例如8-10），如果提出的解决方案确实更简单、更直接或更高效，**可行性**也应该很高。这确保了此类关键假设的优先级。
     {%if enable_simple_hypothesis%}
-    3. Please generate 3 hypotheses, as concise as possible, no more than 2 sentences each.
+    3. 请生成3个假设，尽可能简洁，每个不超过2句话。
     {% endif %}
     {%if generate_unique_hypothesis %}
-    We are now at the beginning stage. Please generate hypotheses that are as unique as possible.
-    Each hypothesis should handle a different component. For example, you can generate four distinct hypotheses for: 
+    我们现在处于开始阶段。请生成尽可能独特的假设。
+    每个假设应该处理不同的组件。例如，你可以为以下生成四个不同的假设：
       - DataLoadSpec
       - FeatureEng
-      - Model
-      - Workflow
-    The goal is for these components together to form a complete code solution. Avoid generating complex ensemble methods (e.g., 5-fold CV or stacked models) at this stage.  
-    Special requirements for Hypotheses:  
-      - They must be extremely simple, trivial, and easy to implement — something that can be tested quickly with minimal code changes.  
-      - Avoid "trick-like" operations, such as freezing layers in the model.  
-    - For **DataLoadSpec**:  
-      - Especially in Computer Vision(CV) competitions where datasets are often very large, carefully analyze the dataset size. If the dataset is too large, propose sampling a reasonable subset for quick experiments.  
-      - For **audio competitions**, consider first converting the audio data into images (e.g., spectrograms) and then applying CV-based methods for modeling.
+      - 模型
+      - 工作流
+    这些组件共同构成完整代码解决方案的目标。在这个阶段避免生成复杂的集成方法（例如5折CV或堆叠模型）。
+    假设的特殊要求：
+      - 它们必须极其简单、平凡且易于实现——可以通过最少的代码更改快速测试。
+      - 避免"技巧"操作，例如在模型中冻结层。
+      - 对于**DataLoadSpec**：
+        - 尤其在计算机视觉(CV)竞赛中数据集通常非常大，仔细分析数据集大小。如果数据集太大，建议采样合理子集进行快速实验。
+        - 对于**音频竞赛**，考虑首先将音频数据转换为图像（例如，频谱图），然后应用基于CV的方法进行建模。
     {% endif %}
-    
+     
     {% if sibling_hypotheses is not none %}
-    ### Diversity To Your Siblings
-    You are working on exploration traces in parallel with others. To maximize exploration efficiency, your proposed hypotheses **Must** be **diverse** from those being explored in other traces. 
-    Here are the problems and hypotheses from your siblings:
+    ### 与兄弟姐妹的多样性
+    你正在与其他代理并行探索轨迹。为了最大化探索效率，你提出的假设**必须**与在其他轨迹中探索的假设**不同**。
+    以下是你兄弟姐妹的问题和假设：
     {% for hyp in sibling_hypotheses %}
-    === Sibling {{ loop.index }} Hypothesis ===
+    === 兄弟姐妹 {{ loop.index }} 的假设 ===
     {{ hyp }}
     {% endfor %}
-    Your generated hypotheses **MUST** guide the agent towards different approaches, for example, different backbone models, different feature engineering methods, different ensemble strategies, different workflow optimizations, focus on efficiency etc. Avoid proposing hypotheses that are similar to those listed above.
+    你生成的假设**必须**引导agent采取不同的方法，例如不同的骨干模型、不同的特征工程方法、不同的集成策略、不同的 workflow 优化、专注于效率等。避免提出与上述列出的假设相似的假设。
     {% endif %}
 
     {% if inject_diverse %}
-    # Focus on Diversity!!
-    Diversity is very critical in the analysis of scenario problems. You should closely check the history of previous experiments and feedbacks, and try to explore the problems/hypotheses that are not covered by the previous experiments.
-    1. Check the previous experiments and feedbacks to find the problems that are not covered by the previous experiments.
-    2. Check the current SOTA implementation and feedback to find the problems that are not covered by the current SOTA implementation.
-    3. Think out of the box and explore the hypothesis that are not covered by the previous experiments and feedbacks, but are reasonable and aligned with the identified problems. 
-    4. Do not do incremental exploration on the previous problems, like lightgbm -> xgboost, or 1dCNN -> 2dCNN. Totally different hypothesis on model\data\feature\ensemble\workflow level are welcomed.
+    # 专注于多样性!!
+    多样性在场景问题分析中非常关键。你应该密切检查先前实验和反馈的历史，并尝试探索先前实验未涵盖的问题/假设。
+    1. 检查先前的实验和反馈，找到先前实验未涵盖的问题。
+    2. 检查当前SOTA实现和反馈，找到当前SOTA实现未涵盖的问题。
+    3. 跳出框框思考，探索未由先前实验和反馈涵盖但合理且与识别的问题一致的假设。
+    4. 不要对先前的问题进行增量探索，如 lightgbm -> xgboost，或 1dCNN -> 2dCNN。完全不同的模型\数据\特征\集成\工作流级别的假设是受欢迎的。
     {% endif %}
 
     {% if plan.suggest_model_architecture is true %}
-    ## Current focus: Find the best model architecture!
-    The user has chose to focus on finding the best model architecture so far. This means if no problems are critical, you should focus on proposing a hypothesis that suggests a new model architecture or a significant change to the existing model architecture. This is the primary focus of the current iteration.
-    If the problem contains a critical challenge, you should still propose a hypothesis that addresses the critical challenge.
+    ## 当前重点：寻找最佳模型架构！
+    用户选择到目前为止专注于寻找最佳模型架构。这意味着如果没有关键问题，你应该专注于提出建议新模型架构或对现有模型架构进行重大更改的假设。这是当前迭代的主要重点。
+    如果问题包含关键挑战，你仍然应该提出解决关键挑战的假设。
     {% elif plan.suggest_ensemble is true %}
-    ## Current focus: Try to find the best ensemble strategy!
-    The user has chose to focus on finding the best ensemble strategy so far. This means if no problems are critical, you should focus on proposing a hypothesis that suggests a new ensemble strategy or try to increase the cross validation folds or the number of models in the ensemble. This is the primary focus of the current iteration.
-    Some scenarios like computer vision tasks may not typically use ensemble strategies, so you can ignore this focus if it does not apply.
-    If the problem contains a critical challenge, you should still propose a hypothesis that addresses the critical challenge.
+    ## 当前重点：尝试找到最佳集成策略！
+    用户选择到目前为止专注于寻找最佳集成策略。这意味着如果没有关键问题，你应该专注于提出建议新集成策略或尝试增加交叉验证折数或集成中模型数量的假设。这是当前迭代的主要重点。
+    某些场景（如计算机视觉任务）通常不使用集成策略，因此如果适用可以忽略此重点。
+    如果问题包含关键挑战，你仍然应该提出解决关键挑战的假设。
     {% endif %}
-    
+     
     {% if hypothesis_output_format is not none %}
-    ## Final Output Format in JSON Schema:
+    ## JSON Schema中的最终输出格式：
     {{ hypothesis_output_format }}
     {% else %}
-    Please response in json format.
+    请按json格式回复。
     {% endif %}
-    
+     
   user: |-
-    # Scenario Description
+    # 场景描述
     {{ scenario_desc }}
 
-    # Previous Experiments and Feedbacks
+    # 先前的实验和反馈
     {{ exp_and_feedback_list_desc }}
 
-    # Current SOTA Implementation
+    # 当前SOTA实现
     {{ sota_exp_desc }}
 
-    # Identified Challenges{% if enable_idea_pool %} with Sampled Ideas{% endif %}
+    # 已识别的挑战{% if enable_idea_pool %}及抽样想法{% endif %}
     {{ problems }}
 
     {% if knowledge %}
-    # Some reference knowledge from the community
+    # 来自社区的一些参考知识
     {{ knowledge }}
     {% endif %}
 
